@@ -1,0 +1,32 @@
+.login-page {
+  display: flex;
+  height: 100vh;
+
+  &-form {
+    width: 496px;
+    padding: 100px;
+
+    & > .form {
+      margin-top: 130px;
+      display: flex;
+      flex-direction: column;
+
+      & > .form-title {
+        font-size: 24px;
+        letter-spacing: 0.15px;
+      }
+
+      & > .form-row {
+          margin: 20px 0;
+          
+          & > div {
+            width: 100%;
+          }
+      }
+    }
+  }
+
+  &-image {
+    flex: 1;
+  }
+}

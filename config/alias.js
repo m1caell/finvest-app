@@ -7,5 +7,8 @@ module.exports = {
   '@pages': `${paths.appSrc}/pages`,
   '@services': `${paths.appSrc}/services`,
   '@styles': `${paths.appSrc}/styles`,
-  '@utils': `${paths.appSrc}/utils`
+  '@utils': `${paths.appSrc}/utils`,
+  '@routes': `${paths.appSrc}/routes`,
+  '@providers': `${paths.appSrc}/providers`,
+  '@static': `${paths.appSrc}/static`
 }
