@@ -1,6 +1,5 @@
 import { useAuthService } from '@services'
 import { useHistory } from 'react-router-dom'
-import loginImage from '@static/login-image.jpg'
 import { TextField, Button } from '@material-ui/core'
 import { ReactComponent as FinvestLogo } from '@static/finvest-logo.svg'
 
@@ -27,8 +26,9 @@ function LoginPage() {
               <TextField
                 id="email"
                 label="E-mail"
+                type="email"
                 variant="outlined"
-                inputProps={{ maxlength: 100 }}
+                inputProps={{ maxLength: 100 }}
               />
             </div>
 
@@ -39,7 +39,7 @@ function LoginPage() {
                 type="password"
                 autoComplete="current-password"
                 variant="outlined"
-                inputProps={{ maxlength: 50 }}
+                inputProps={{ maxLength: 50 }}
               />
             </div>
 
@@ -50,11 +50,7 @@ function LoginPage() {
             </div>
           </form>
         </aside>
-        <img
-          className="login-page-image"
-          src={loginImage}
-          alt="Imagem de analista de finanças com seta de crescimento"
-        />
+        <div className="login-page-image" />
       </div>
     </div>
   )
