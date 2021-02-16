@@ -4,11 +4,11 @@ import { Route, useHistory } from 'react-router-dom'
 import { useAuthService } from '@services'
 
 export const PublicRoute = ({ component: Component, ...rest }) => {
-  const { auth } = useAuthService()
+  const { loggedUser } = useAuthService()
   const history = useHistory()
 
   useEffect(() => {
-    if (auth) {
+    if (loggedUser) {
       history.push('/')
     }
   }, [])
