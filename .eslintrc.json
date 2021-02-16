@@ -27,6 +27,7 @@
         "named": "ignore",
         "asyncArrow": "ignore"
       }
-    ]
+    ],
+    "no-unused-vars": "warn"
   }
 }

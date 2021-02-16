@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import { useAuthService } from '@services'
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const { auth } = useAuthService()
+  const { loggedUser } = useAuthService()
 
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        auth?.user ? (
+        loggedUser ? (
           <Route {...rest} render={props => <Component {...props} />} />
         ) : (
           <Redirect
