@@ -1,5 +1,5 @@
 import createGlobalState from 'react-create-global-state'
-import { User } from '../../models/user.model'
+import { User } from '@models'
 
 const [useGlobalAuthProvider, AuthProvider] = createGlobalState()
 
@@ -42,8 +42,6 @@ const useAuthService = () => {
 
   const getLoggedUser = () => {
     const user = getLoggedUserInLocalStorage()
-    console.log('auth: ', auth)
-    console.log('user: ', user)
 
     if (auth) {
       return auth

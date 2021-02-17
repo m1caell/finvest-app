@@ -1,0 +1,14 @@
+@import '@styles/global-variables';
+
+.main-layout {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding-top: 0;
+  margin: 0 auto;
+
+  &-content {
+    max-width: $max-width;
+    padding: 20px 30px;
+    margin: 0 auto;
+  }
+}

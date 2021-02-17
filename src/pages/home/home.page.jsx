@@ -1,6 +1,9 @@
+import { LayoutBodyComponent } from '@components'
 import { useAuthService } from '@services'
 import { AnalystContent } from './components/analyst-content.component'
 import { CustomerContent } from './components/customer-content.component'
+
+import './home.page.scss'
 
 const HomePage = () => {
   const { loggedUser } = useAuthService()
@@ -22,10 +25,9 @@ const HomePage = () => {
   }
 
   return (
-    <div>
-      <h1>Home</h1>
-      {renderContent()}
-    </div>
+    <LayoutBodyComponent>
+      <div className="home-page">{renderContent()}</div>
+    </LayoutBodyComponent>
   )
 }
 
