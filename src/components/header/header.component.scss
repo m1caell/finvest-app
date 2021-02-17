@@ -1,0 +1,19 @@
+.header {
+  width: 100%;
+  height: 60px;
+  background-color: #000000;
+  padding: 0 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & svg {
+    width: 134px;
+  }
+
+  &-logout-button {
+    & > .MuiButton-label {
+      color: #ffffff;
+    }
+  }
+}

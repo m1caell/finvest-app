@@ -1,5 +1,5 @@
 const CustomerContent = () => {
-  return <div>Cliente</div>
+  return <div className="home-page-customer"></div>
 }
 
 export { CustomerContent }
