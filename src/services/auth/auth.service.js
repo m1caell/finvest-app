@@ -1,18 +1,14 @@
 import createGlobalState from 'react-create-global-state'
+import { useAuthApi } from '../api/auth-api.service'
 import { User } from '@models'
 
 const [useGlobalAuthProvider, AuthProvider] = createGlobalState()
 
-const USER_MOCK = {
-  name: 'Nome Completo',
-  email: 'test@test.com.br',
-  type: 'ANALYST', // ANALYST || CUSTOMER
-  token: 'dfjalsdfkjwqlkj4352452345ladjkfklasjdf'
-}
-
 const LS_LOGGED_USER_NAME = 'loggedUser'
 const useAuthService = () => {
   const [auth, setAuth] = useGlobalAuthProvider()
+
+  const { doLogin } = useAuthApi()
 
   const saveLoggedUserInLocalStorage = user => {
     localStorage.setItem(LS_LOGGED_USER_NAME, JSON.stringify(user))
@@ -27,12 +23,17 @@ const useAuthService = () => {
   }
 
   const signin = async ({ email, password }) => {
-    // TODO: criar lógica do usuário quando API entregar essa info, adicionar data para criar user
-    const user = new User(USER_MOCK)
-    saveLoggedUserInLocalStorage(user)
-    setAuth(user)
+    if (email || password) {
+      const result = await doLogin({ email, password })
 
-    return user
+      if (result?.data) {
+        const user = new User(result.data)
+        saveLoggedUserInLocalStorage(user)
+        setAuth(user)
+
+        return user
+      }
+    }
   }
 
   const signout = () => {
