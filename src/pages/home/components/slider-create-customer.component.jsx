@@ -12,11 +12,14 @@ import { useHomePage } from '../home.hook'
 import PropTypes from 'prop-types'
 import { serializeCPF } from '@utils/index'
 
-export const SliderCreateCustomer = ({ setIsOpenDrawer }) => {
+export const SliderCreateCustomer = ({ setIsOpenDrawer, onSuccessMessage }) => {
   const [showPassword, setShowPassword] = useState(false)
   const [cpf, setCpf] = useState('')
 
-  const onCloseCreateCustomerSlider = () => setShowPassword(false)
+  const onCloseCreateCustomerSlider = () => {
+    setIsOpenDrawer(false)
+    onSuccessMessage(true)
+  }
 
   const { doSubmit, error } = useHomePage({ onCloseCreateCustomerSlider })
 
@@ -129,5 +132,6 @@ export const SliderCreateCustomer = ({ setIsOpenDrawer }) => {
 }
 
 SliderCreateCustomer.propTypes = {
-  setIsOpenDrawer: PropTypes.func
+  setIsOpenDrawer: PropTypes.func,
+  onSuccessMessage: PropTypes.func
 }

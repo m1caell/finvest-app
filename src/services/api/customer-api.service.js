@@ -1,12 +1,12 @@
 import { useRequest } from './request.service'
 
-const useCustomerApi = () => {
-  const { callPost } = useRequest()
+const useCustomerApi = ({ authorization }) => {
+  const { callPost } = useRequest({ authorization })
 
   const createCustomer = async customerModel => {
     try {
       const result = await callPost({
-        url: '/customer',
+        url: '/user',
         data: customerModel
       })
 

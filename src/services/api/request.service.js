@@ -1,37 +1,28 @@
 import axios from 'axios'
 
-const useRequest = () => {
+const useRequest = extraConfig => {
   const pathUrl = 'http://localhost:8080/api'
 
   const axiosConfig = {
     headers: {
-      noLoading: false
+      Authorization: extraConfig?.authorization
     }
   }
 
   axios.interceptors.request.use(
     config => {
-      const { headers } = config
-
-      if (!headers.noLoading) {
-        // showLoading()
-      }
-      axiosConfig.headers.noLoading = false
       return config
     },
     error => {
-      //   hideLoading()
       return Promise.reject(error)
     }
   )
 
   axios.interceptors.response.use(
     response => {
-      //   hideLoading()
       return response
     },
     error => {
-      //   hideLoading()
       return Promise.reject(error)
     }
   )

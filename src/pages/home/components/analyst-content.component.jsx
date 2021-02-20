@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import Alert from '@material-ui/lab/Alert'
+import Snackbar from '@material-ui/core/Snackbar'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import { CardComponent, TitleComponent } from '@components'
 import { SliderCreateCustomer } from './slider-create-customer.component'
 
 const AnalystContent = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false)
 
   useEffect(() => {
     document
@@ -53,10 +55,22 @@ const AnalystContent = () => {
           onOpen={toggleDrawer(true)}
         >
           <div className="home-page-analyst-drawer">
-            <SliderCreateCustomer setIsOpenDrawer={setIsOpenDrawer} />
+            <SliderCreateCustomer
+              onSuccessMessage={() => setShowSuccessAlert(true)}
+              setIsOpenDrawer={setIsOpenDrawer}
+            />
           </div>
         </SwipeableDrawer>
       </CardComponent>
+      <Snackbar
+        open={showSuccessAlert}
+        autoHideDuration={6000}
+        onClose={() => setShowSuccessAlert(false)}
+      >
+        <Alert onClose={() => setShowSuccessAlert(false)} severity="success">
+          Cliente cadastrado com sucesso.
+        </Alert>
+      </Snackbar>
     </div>
   )
 }
