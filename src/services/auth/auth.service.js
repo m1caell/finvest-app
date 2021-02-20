@@ -57,6 +57,7 @@ const useAuthService = () => {
 
   return {
     loggedUser: getLoggedUser(),
+    authorization: getLoggedUser()?.token,
     signin,
     signout
   }

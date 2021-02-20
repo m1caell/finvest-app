@@ -7,12 +7,9 @@ import './menu.component.scss'
 const MenuComponent = () => {
   const { loggedUser } = useAuthService()
 
-  const analystOptions = [{ name: 'CADASTRAR CLIENTE', function: () => {} }]
+  const analystOptions = ['CADASTRAR CLIENTE']
 
-  const customerOptions = [
-    { name: 'CRIAR CARTEIRA', function: () => {} },
-    { name: 'SELECIONAR CARTEIRA', function: () => {} }
-  ]
+  const customerOptions = ['CRIAR CARTEIRA', 'SELECIONAR CARTEIRA']
 
   const renderButtons = () => {
     const type = loggedUser?.type
@@ -27,8 +24,8 @@ const MenuComponent = () => {
     }
 
     return options.map((option, key) => (
-      <Button key={key} onClick={option?.function} variant="contained">
-        {option?.name}
+      <Button id={`menuIdOption${key}`} key={key} variant="contained">
+        {option}
       </Button>
     ))
   }
