@@ -4,15 +4,21 @@ import Snackbar from '@material-ui/core/Snackbar'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import { CardComponent, TitleComponent } from '@components'
 import { SliderCreateCustomer } from './slider-create-customer.component'
+import { CustomerRow } from './customer-row.component'
+import { useHomePage } from '../home.hook'
 
 const AnalystContent = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [showSuccessAlert, setShowSuccessAlert] = useState(false)
 
+  const { loadCustomers, customers } = useHomePage()
+
   useEffect(() => {
     document
       .getElementById('menuIdOption0')
       ?.addEventListener('click', () => setIsOpenDrawer(true))
+
+    loadCustomers()
 
     return () => {
       document
@@ -22,12 +28,16 @@ const AnalystContent = () => {
   }, [])
 
   const renderContent = () => {
+    if (customers.length) {
+      return customers.map((customer, key) => (
+        <CustomerRow key={key} data={customer} />
+      ))
+    }
+
     return (
-      <div className="home-page-analyst-list">
-        <Alert variant="outlined" severity="info">
-          Ainda não há cliente para mostrar aqui.
-        </Alert>
-      </div>
+      <Alert variant="outlined" severity="info">
+        Ainda não há cliente para mostrar aqui.
+      </Alert>
     )
   }
 
@@ -47,7 +57,7 @@ const AnalystContent = () => {
     <div className="home-page-analyst">
       <CardComponent>
         <TitleComponent>Clientes</TitleComponent>
-        {renderContent()}
+        <div className="home-page-analyst-list">{renderContent()}</div>
         <SwipeableDrawer
           anchor="right"
           open={isOpenDrawer}
@@ -58,6 +68,7 @@ const AnalystContent = () => {
             <SliderCreateCustomer
               onSuccessMessage={() => setShowSuccessAlert(true)}
               setIsOpenDrawer={setIsOpenDrawer}
+              loadCustomers={loadCustomers}
             />
           </div>
         </SwipeableDrawer>

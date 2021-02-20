@@ -7,16 +7,18 @@ const useCustomerService = () => {
 
   const { authorization } = useAuthService()
 
-  const { createCustomer } = useCustomerApi({ authorization })
+  const { createCustomer, getAll } = useCustomerApi({ authorization })
 
   const createNewCustomer = async customerModel => {
     if (validate(customerModel)) {
       customerModel.cpf = customerModel.cpf.replace(/[^0-9]/g, '')
 
-      const result = await createCustomer(customerModel)
-
-      return result
+      return await createCustomer(customerModel)
     }
+  }
+
+  const getAllCustomers = async () => {
+    return await getAll()
   }
 
   const validate = ({ fullName, email, cpf, password }) => {
@@ -54,7 +56,7 @@ const useCustomerService = () => {
     return true
   }
 
-  return { createNewCustomer, error }
+  return { createNewCustomer, error, getAllCustomers }
 }
 
 export { useCustomerService }
