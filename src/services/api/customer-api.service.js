@@ -1,7 +1,7 @@
 import { useRequest } from './request.service'
 
 const useCustomerApi = ({ authorization }) => {
-  const { callPost } = useRequest({ authorization })
+  const { callPost, callGet } = useRequest({ authorization })
 
   const createCustomer = async customerModel => {
     try {
@@ -12,11 +12,23 @@ const useCustomerApi = ({ authorization }) => {
 
       return result.data
     } catch (error) {
-      return null
+      console.error(error)
     }
   }
 
-  return { createCustomer }
+  const getAll = async () => {
+    try {
+      const result = await callGet({
+        url: '/user/list'
+      })
+
+      return result.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  return { createCustomer, getAll }
 }
 
 export { useCustomerApi }
