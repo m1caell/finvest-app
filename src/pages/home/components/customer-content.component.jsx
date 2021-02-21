@@ -33,7 +33,6 @@ const CustomerContent = () => {
   const renderFirstDialogAccess = () => (
     <Dialog
       open={showFirstDialogAccess}
-      onClose={() => setShowFirstDialogAccess(false)}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
