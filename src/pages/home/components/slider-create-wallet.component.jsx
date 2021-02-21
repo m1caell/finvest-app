@@ -1,35 +1,29 @@
-
-import {
-  TextField,
-  Button,
-} from '@material-ui/core'
+import { TextField, Button } from '@material-ui/core'
 import { TitleComponent } from '@components'
 import Alert from '@material-ui/lab/Alert'
 import { useHomePage } from '../home.hook'
 import PropTypes from 'prop-types'
-
 
 export const SliderCreateWallet = ({
   setIsOpenDrawer,
   onSuccessMessage,
   loadWallets
 }) => {
-
   const onCloseCreateWalletSlider = () => {
     setIsOpenDrawer(false)
     onSuccessMessage(true)
     loadWallets()
   }
 
-  const { doSubmit, error } = useHomePage({ onCloseCreateWalletSlider })
+  const { doSubmitWallet, error } = useHomePage({ onCloseCreateWalletSlider })
 
   const onSubmit = event => {
     event.preventDefault()
     const form = event && event.target
 
-    doSubmit({
+    doSubmitWallet({
       name: form.name.value,
-      description: form.description.value,
+      description: form.description.value
     })
   }
 
@@ -59,9 +53,6 @@ export const SliderCreateWallet = ({
             inputProps={{ maxLength: 200 }}
           />
         </div>
-
-       
-        
 
         {renderError()}
 

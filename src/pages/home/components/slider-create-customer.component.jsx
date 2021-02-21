@@ -26,13 +26,13 @@ export const SliderCreateCustomer = ({
     loadCustomers()
   }
 
-  const { doSubmit, error } = useHomePage({ onCloseCreateCustomerSlider })
+  const { doSubmitCustomer, error } = useHomePage({ onCloseCreateCustomerSlider })
 
   const onSubmit = event => {
     event.preventDefault()
     const form = event && event.target
 
-    doSubmit({
+    doSubmitCustomer({
       fullName: form.fullName.value,
       email: form.email.value,
       cpf: form.cpf.value,

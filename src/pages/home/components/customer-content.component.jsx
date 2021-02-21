@@ -10,20 +10,19 @@ const CustomerContent = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [showSuccessAlert, setShowSuccessAlert] = useState(false)
 
-
   useEffect(() => {
     document
       .getElementById('menuIdOption0')
       ?.addEventListener('click', () => setIsOpenDrawer(true))
 
-       return () => {
+    return () => {
       document
         .getElementById('menuIdOption0')
         ?.removeEventListener('click', () => toggleDrawer(true))
     }
   }, [])
 
-   const toggleDrawer = open => event => {
+  const toggleDrawer = open => event => {
     if (
       event &&
       event.type === 'keydown' &&
@@ -35,37 +34,38 @@ const CustomerContent = () => {
     setIsOpenDrawer(open)
   }
 
-
-  return <div className="home-page-customer">
-    <div className="home-page-customer-list"></div>
-    <div className="home-page-customer-drawer">
-    <CardComponent>
-        <TitleComponent>Carteiras</TitleComponent>
-        <SwipeableDrawer
-          anchor="right"
-          open={isOpenDrawer}
-          onClose={toggleDrawer(false)}
-          onOpen={toggleDrawer(true)}
+  return (
+    <div className="home-page-customer">
+      <div className="home-page-customer-list"></div>
+      <div className="home-page-customer-drawer">
+        <CardComponent>
+          <TitleComponent>Carteiras</TitleComponent>
+          <SwipeableDrawer
+            anchor="right"
+            open={isOpenDrawer}
+            onClose={toggleDrawer(false)}
+            onOpen={toggleDrawer(true)}
+          >
+            <div className="home-page-customer-drawer">
+              <SliderCreateWallet
+                onSuccessMessage={() => setShowSuccessAlert(true)}
+                setIsOpenDrawer={setIsOpenDrawer}
+              />
+            </div>
+          </SwipeableDrawer>
+        </CardComponent>
+        <Snackbar
+          open={showSuccessAlert}
+          autoHideDuration={6000}
+          onClose={() => setShowSuccessAlert(false)}
         >
-          <div className="home-page-customer-drawer">
-            <SliderCreateWallet
-              onSuccessMessage={() => setShowSuccessAlert(true)}
-              setIsOpenDrawer={setIsOpenDrawer}
-            />
-          </div>
-        </SwipeableDrawer>
-      </CardComponent>
-      <Snackbar
-        open={showSuccessAlert}
-        autoHideDuration={6000}
-        onClose={() => setShowSuccessAlert(false)}
-      >
-        <Alert onClose={() => setShowSuccessAlert(false)} severity="success">
-          Carteira cadastrada com sucesso.
-        </Alert>
-      </Snackbar>
-          </div>
-  </div>
+          <Alert onClose={() => setShowSuccessAlert(false)} severity="success">
+            Carteira cadastrada com sucesso.
+          </Alert>
+        </Snackbar>
+      </div>
+    </div>
+  )
 }
 
 export { CustomerContent }

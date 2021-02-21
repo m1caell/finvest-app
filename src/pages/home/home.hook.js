@@ -1,19 +1,34 @@
 import { useState } from 'react'
-import { Customer } from '@models/'
-import { useCustomerService } from '@services/index'
+import { Customer, Wallet } from '@models/index'
+import { useCustomerService, useWalletService } from '@services/index'
 import PropTypes from 'prop-types'
 
 const useHomePage = props => {
   const [customers, setCustomers] = useState([])
 
-  const { createNewCustomer, getAllCustomers, error } = useCustomerService()
+  const {
+    createNewCustomer,
+    getAllCustomers,
+    customerError
+  } = useCustomerService()
 
-  const doSubmit = async ({ fullName, email, cpf, password }) => {
+  const { createNewWallet, walletError } = useWalletService()
+
+  const doSubmitCustomer = async ({ fullName, email, cpf, password }) => {
     const customer = new Customer({ fullName, email, cpf, password })
     const result = await createNewCustomer(customer)
 
     if (result) {
       props?.onCloseCreateCustomerSlider()
+    }
+  }
+
+  const doSubmitWallet = async ({ name, description }) => {
+    const wallet = new Wallet({ name, description })
+    const result = await createNewWallet(wallet)
+
+    if (result) {
+      props?.onCloseCreateWalletSlider()
     }
   }
 
@@ -26,16 +41,18 @@ const useHomePage = props => {
   }
 
   return {
-    doSubmit,
+    doSubmitCustomer,
+    doSubmitWallet,
     loadCustomers,
     customers,
-    error
+    error: customerError || walletError
   }
 }
 
 useHomePage.propTypes = {
   props: PropTypes.shape({
-    onCloseCreateCustomerSlider: PropTypes.func
+    onCloseCreateCustomerSlider: PropTypes.func,
+    onCloseCreateWalletSlider: PropTypes.func
   })
 }
 
