@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Customer, UserConfirmData } from '@models/index'
-import { useCustomerService } from '@services/index'
+import { Customer, Wallet, UserConfirmData } from '@models/index'
+import { useCustomerService, useWalletService } from '@services/index'
 import PropTypes from 'prop-types'
 
 const useHomePage = props => {
@@ -9,11 +9,13 @@ const useHomePage = props => {
   const {
     createNewCustomer,
     getAllCustomers,
-    confirmFirstUserData,
-    error
+    customerError,
+    confirmFirstUserData
   } = useCustomerService()
 
-  const doSubmit = async ({ fullName, email, cpf, password }) => {
+  const { createNewWallet, walletError } = useWalletService()
+
+  const doSubmitCustomer = async ({ fullName, email, cpf, password }) => {
     const customer = new Customer({ fullName, email, cpf, password })
     const result = await createNewCustomer(customer)
 
@@ -22,11 +24,20 @@ const useHomePage = props => {
     }
   }
 
+  const doSubmitWallet = async ({ name, description }) => {
+    const wallet = new Wallet({ name, description })
+    const result = await createNewWallet(wallet)
+
+    if (result) {
+      props?.onCloseCreateWalletSlider()
+    }
+  }
+
   const doConfirmData = async ({ fullName, email, password }) => {
     const userConfirmData = new UserConfirmData({ fullName, email, password })
     const result = await confirmFirstUserData(userConfirmData)
 
-    if(result) {
+    if (result) {
       props?.onSuccessDataConfirmation()
     }
   }
@@ -40,17 +51,19 @@ const useHomePage = props => {
   }
 
   return {
-    doSubmit,
+    doSubmitCustomer,
+    doSubmitWallet,
     loadCustomers,
+    doConfirmData,
     customers,
-    error,
-    doConfirmData
+    error: customerError || walletError
   }
 }
 
 useHomePage.propTypes = {
   props: PropTypes.shape({
-    onCloseCreateCustomerSlider: PropTypes.func
+    onCloseCreateCustomerSlider: PropTypes.func,
+    onCloseCreateWalletSlider: PropTypes.func
   })
 }
 

@@ -68,7 +68,12 @@ const useCustomerService = () => {
     return true
   }
 
-  return { createNewCustomer, error, getAllCustomers, confirmFirstUserData }
+  return {
+    createNewCustomer,
+    customerError: error,
+    getAllCustomers,
+    confirmFirstUserData
+  }
 }
 
 export { useCustomerService }
