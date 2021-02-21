@@ -1,0 +1,17 @@
+.confirm-data-modal {
+  margin-top: 50px;
+
+  & > .form-row {
+    margin-bottom: 30px;
+
+    & > div {
+      width: 100%;
+    }
+  }
+
+  & .buttons {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 10px;
+  }
+}

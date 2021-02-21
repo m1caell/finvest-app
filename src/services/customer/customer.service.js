@@ -7,10 +7,12 @@ const useCustomerService = () => {
 
   const { authorization } = useAuthService()
 
-  const { createCustomer, getAll } = useCustomerApi({ authorization })
+  const { createCustomer, getAll, updateCustomerData } = useCustomerApi({
+    authorization
+  })
 
   const createNewCustomer = async customerModel => {
-    if (validate(customerModel)) {
+    if (validate(customerModel) && validateCpf({ cpf: customerModel?.cpf })) {
       customerModel.cpf = customerModel.cpf.replace(/[^0-9]/g, '')
 
       return await createCustomer(customerModel)
@@ -21,17 +23,13 @@ const useCustomerService = () => {
     return await getAll()
   }
 
-  const validate = ({ fullName, email, cpf, password }) => {
-    if (!fullName) {
-      setError('Nome completo é obrigatório.')
-      return false
+  const confirmFirstUserData = async userConfirmData => {
+    if (validate(userConfirmData)) {
+      return await updateCustomerData(userConfirmData)
     }
+  }
 
-    if (!email) {
-      setError('Email é obrigatório.')
-      return false
-    }
-
+  const validateCpf = ({ cpf }) => {
     if (!cpf) {
       setError('CPF é obrigatório.')
       return false
@@ -42,13 +40,27 @@ const useCustomerService = () => {
       return false
     }
 
+    return true
+  }
+
+  const validate = ({ fullName, email, password }) => {
+    if (!fullName) {
+      setError('Nome completo é obrigatório.')
+      return false
+    }
+
+    if (!email) {
+      setError('Email é obrigatório.')
+      return false
+    }
+
     if (!password) {
-      setError('Pré-senha é obrigatório.')
+      setError('Senha é obrigatória.')
       return false
     }
 
     if (password.length < 7) {
-      setError('Pré-senha deve conter no mínimo 8 caracteres.')
+      setError('Senha deve conter no mínimo 8 caracteres.')
       return false
     }
 
@@ -56,7 +68,12 @@ const useCustomerService = () => {
     return true
   }
 
-  return { createNewCustomer, customerError: error, getAllCustomers }
+  return {
+    createNewCustomer,
+    customerError: error,
+    getAllCustomers,
+    confirmFirstUserData
+  }
 }
 
 export { useCustomerService }

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Customer, Wallet } from '@models/index'
+import { Customer, Wallet, UserConfirmData } from '@models/index'
 import { useCustomerService, useWalletService } from '@services/index'
 import PropTypes from 'prop-types'
 
@@ -9,7 +9,8 @@ const useHomePage = props => {
   const {
     createNewCustomer,
     getAllCustomers,
-    customerError
+    customerError,
+    confirmFirstUserData
   } = useCustomerService()
 
   const { createNewWallet, walletError } = useWalletService()
@@ -32,6 +33,15 @@ const useHomePage = props => {
     }
   }
 
+  const doConfirmData = async ({ fullName, email, password }) => {
+    const userConfirmData = new UserConfirmData({ fullName, email, password })
+    const result = await confirmFirstUserData(userConfirmData)
+
+    if (result) {
+      props?.onSuccessDataConfirmation()
+    }
+  }
+
   const loadCustomers = async () => {
     const result = await getAllCustomers()
 
@@ -44,6 +54,7 @@ const useHomePage = props => {
     doSubmitCustomer,
     doSubmitWallet,
     loadCustomers,
+    doConfirmData,
     customers,
     error: customerError || walletError
   }

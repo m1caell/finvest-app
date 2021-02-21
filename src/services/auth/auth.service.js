@@ -36,6 +36,13 @@ const useAuthService = () => {
     }
   }
 
+  const updateLoggedUser = user => {
+    if (user) {
+      saveLoggedUserInLocalStorage(user)
+      setAuth(user)
+    }
+  }
+
   const signout = () => {
     setAuth(null)
     removeLoggedUserInLocalStorage()
@@ -58,6 +65,7 @@ const useAuthService = () => {
   return {
     loggedUser: getLoggedUser(),
     authorization: getLoggedUser()?.token,
+    updateLoggedUser,
     signin,
     signout
   }
