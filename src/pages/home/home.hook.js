@@ -1,12 +1,17 @@
 import { useState } from 'react'
-import { Customer } from '@models/'
+import { Customer, UserConfirmData } from '@models/index'
 import { useCustomerService } from '@services/index'
 import PropTypes from 'prop-types'
 
 const useHomePage = props => {
   const [customers, setCustomers] = useState([])
 
-  const { createNewCustomer, getAllCustomers, error } = useCustomerService()
+  const {
+    createNewCustomer,
+    getAllCustomers,
+    confirmFirstUserData,
+    error
+  } = useCustomerService()
 
   const doSubmit = async ({ fullName, email, cpf, password }) => {
     const customer = new Customer({ fullName, email, cpf, password })
@@ -14,6 +19,15 @@ const useHomePage = props => {
 
     if (result) {
       props?.onCloseCreateCustomerSlider()
+    }
+  }
+
+  const doConfirmData = async ({ fullName, email, password }) => {
+    const userConfirmData = new UserConfirmData({ fullName, email, password })
+    const result = await confirmFirstUserData(userConfirmData)
+
+    if(result) {
+      props?.onSuccessDataConfirmation()
     }
   }
 
@@ -29,7 +43,8 @@ const useHomePage = props => {
     doSubmit,
     loadCustomers,
     customers,
-    error
+    error,
+    doConfirmData
   }
 }
 

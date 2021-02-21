@@ -4,7 +4,9 @@ const USER_TYPE = {
 }
 
 class User {
-  constructor({ name, email, type, token }) {
+  constructor({ id, firstLogin, name, email, type, token }) {
+    this.id = id
+    this.firstLogin = firstLogin
     this.name = name
     this.email = email
     this.type = USER_TYPE[type]

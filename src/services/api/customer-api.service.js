@@ -1,7 +1,7 @@
 import { useRequest } from './request.service'
 
 const useCustomerApi = ({ authorization }) => {
-  const { callPost, callGet } = useRequest({ authorization })
+  const { callPost, callGet, callPut } = useRequest({ authorization })
 
   const createCustomer = async customerModel => {
     try {
@@ -28,7 +28,20 @@ const useCustomerApi = ({ authorization }) => {
     }
   }
 
-  return { createCustomer, getAll }
+  const updateCustomerData = async userConfirmData => {
+    try {
+      const result = await callPut({
+        url: '/user',
+        data: userConfirmData
+      })
+
+      return result.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  return { createCustomer, getAll, updateCustomerData }
 }
 
 export { useCustomerApi }
