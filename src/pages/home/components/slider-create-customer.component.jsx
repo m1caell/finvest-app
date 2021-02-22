@@ -2,22 +2,18 @@ import { useState } from 'react'
 import {
   TextField,
   Button,
-  InputAdornment,
-  IconButton
 } from '@material-ui/core'
-import { Visibility, VisibilityOff } from '@material-ui/icons'
 import { TitleComponent } from '@components'
 import Alert from '@material-ui/lab/Alert'
 import { useHomePage } from '../home.hook'
 import PropTypes from 'prop-types'
-import { serializeCPF } from '@utils/index'
+import { serializeCPF, getOnlyNumbers } from '@utils/index'
 
 export const SliderCreateCustomer = ({
   setIsOpenDrawer,
   onSuccessMessage,
   loadCustomers
 }) => {
-  const [showPassword, setShowPassword] = useState(false)
   const [cpf, setCpf] = useState('')
 
   const onCloseCreateCustomerSlider = () => {
@@ -26,7 +22,9 @@ export const SliderCreateCustomer = ({
     loadCustomers()
   }
 
-  const { doSubmitCustomer, error } = useHomePage({ onCloseCreateCustomerSlider })
+  const { doSubmitCustomer, error } = useHomePage({
+    onCloseCreateCustomerSlider
+  })
 
   const onSubmit = event => {
     event.preventDefault()
@@ -35,21 +33,12 @@ export const SliderCreateCustomer = ({
     doSubmitCustomer({
       fullName: form.fullName.value,
       email: form.email.value,
-      cpf: form.cpf.value,
-      password: form.password.value
+      cpf: form.cpf.value
     })
   }
 
   const renderError = () =>
     error ? <Alert severity="error">{error}</Alert> : null
-
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword)
-  }
-
-  const handleMouseDownPassword = event => {
-    event.preventDefault()
-  }
 
   const handleChangeCpf = event => {
     const value = event?.target?.value
@@ -77,6 +66,7 @@ export const SliderCreateCustomer = ({
             type="text"
             variant="outlined"
             inputProps={{ maxLength: 100 }}
+            placeholder="Ex.: joao@gmail.com"
           />
         </div>
 
@@ -97,25 +87,11 @@ export const SliderCreateCustomer = ({
           <TextField
             id="password"
             label="Pré-senha"
-            type={showPassword ? 'text' : 'password'}
+            type="text"
             variant="outlined"
-            autoComplete="new-password"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-            inputProps={{
-              maxLength: 50
-            }}
+            disabled
+            value={getOnlyNumbers(cpf)}
+            inputProps={{ maxLength: 50 }}
           />
         </div>
 
