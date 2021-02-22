@@ -4,15 +4,10 @@ import Alert from '@material-ui/lab/Alert'
 import { useHomePage } from '../home.hook'
 import PropTypes from 'prop-types'
 
-export const SliderCreateWallet = ({
-  setIsOpenDrawer,
-  onSuccessMessage,
-  loadWallets
-}) => {
+export const SliderCreateWallet = ({ setIsOpenDrawer, onSuccessMessage }) => {
   const onCloseCreateWalletSlider = () => {
     setIsOpenDrawer(false)
     onSuccessMessage(true)
-    loadWallets()
   }
 
   const { doSubmitWallet, error } = useHomePage({ onCloseCreateWalletSlider })

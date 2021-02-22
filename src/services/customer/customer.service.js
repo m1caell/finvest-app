@@ -43,9 +43,16 @@ const useCustomerService = () => {
     return true
   }
 
-  const validate = ({ fullName, email, password }) => {
+  const validate = ({ fullName, email }) => {
     if (!fullName) {
       setError('Nome completo é obrigatório.')
+      return false
+    }
+
+    const qntWords = fullName.split(' ')
+
+    if (qntWords.length < 2) {
+      setError('Nome completo deve conter no mínimo duas palavras')
       return false
     }
 
@@ -54,13 +61,10 @@ const useCustomerService = () => {
       return false
     }
 
-    if (!password) {
-      setError('Senha é obrigatória.')
-      return false
-    }
+    const emailValidation = RegExp(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'g')
 
-    if (password.length < 7) {
-      setError('Senha deve conter no mínimo 8 caracteres.')
+    if (!emailValidation.test(email)) {
+      setError('Email é inválido.')
       return false
     }
 
