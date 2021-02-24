@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 
 const useHomePage = props => {
   const [customers, setCustomers] = useState([])
-
+  const [wallets, setWallets] = useState([])
   const {
     createNewCustomer,
     getAllCustomers,
@@ -13,7 +13,7 @@ const useHomePage = props => {
     confirmFirstUserData
   } = useCustomerService()
 
-  const { createNewWallet, walletError } = useWalletService()
+  const { createNewWallet, walletError, getAllWallets } = useWalletService()
 
   const doSubmitCustomer = async ({ fullName, email, cpf }) => {
     const customer = new Customer({ fullName, email, cpf })
@@ -50,12 +50,22 @@ const useHomePage = props => {
     }
   }
 
+  const loadWallets = async () => {
+    const result = await getAllWallets()
+
+    if (result?.userList) {
+      setWallets(result.userList)
+    }
+  }
+
   return {
     doSubmitCustomer,
     doSubmitWallet,
     loadCustomers,
+    loadWallets,
     doConfirmData,
     customers,
+    wallets,
     error: customerError || walletError
   }
 }

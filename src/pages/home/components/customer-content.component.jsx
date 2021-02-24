@@ -3,6 +3,8 @@ import Alert from '@material-ui/lab/Alert'
 import Snackbar from '@material-ui/core/Snackbar'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import { SliderCreateWallet } from './slider-create-wallet.component'
+import { WalletRow } from './wallet-row.component'
+import { useHomePage } from '../home.hook'
 import { useAuthService } from '@services/index'
 import { User } from '@models/index'
 import {
@@ -17,6 +19,7 @@ const CustomerContent = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [showSuccessAlert, setShowSuccessAlert] = useState(false)
   const [showFirstDialogAccess, setShowFirstDialogAccess] = useState(false)
+  const { loadWallets, wallets } = useHomePage()
 
   const { loggedUser, updateLoggedUser } = useAuthService()
 
@@ -27,12 +30,28 @@ const CustomerContent = () => {
 
     setShowFirstDialogAccess(loggedUser?.firstLogin)
 
+    loadWallets()
+
     return () => {
       document
         .getElementById('menuIdOption0')
         ?.removeEventListener('click', () => toggleDrawer(true))
     }
   }, [])
+
+  const renderListWallets = () => {
+    if (wallets.length) {
+      return wallets.map((wallet, key) => (
+        <WalletRow key={key} data={wallet} />
+      ))
+    }
+
+    return (
+      <Alert variant="outlined" severity="info">
+        Ainda não há Carteiras cadastradas.
+      </Alert>
+    )
+  }
 
   const toggleDrawer = open => event => {
     if (
@@ -80,7 +99,10 @@ const CustomerContent = () => {
   return (
     <div className="home-page-customer">
       {renderFirstDialogAccess()}
-      <div className="home-page-customer-list"></div>
+      <div className="home-page-customer-list">
+        <h1>Vai aparecer aqui</h1>
+        {renderListWallets}
+        </div>
       <div className="home-page-customer-drawer">
         <SwipeableDrawer
           anchor="right"
@@ -92,6 +114,7 @@ const CustomerContent = () => {
             <SliderCreateWallet
               onSuccessMessage={() => setShowSuccessAlert(true)}
               setIsOpenDrawer={setIsOpenDrawer}
+              loadWallets={loadWallets}
             />
           </div>
         </SwipeableDrawer>
