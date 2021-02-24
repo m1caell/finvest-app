@@ -12,7 +12,7 @@ const useCustomerService = () => {
   })
 
   const createNewCustomer = async customerModel => {
-    if (validate(customerModel) && validateCpf({ cpf: customerModel?.cpf })) {
+    if (validate(customerModel) && validateCpf(customerModel)) {
       customerModel.cpf = customerModel.cpf.replace(/[^0-9]/g, '')
 
       return await createCustomer(customerModel)
@@ -24,7 +24,7 @@ const useCustomerService = () => {
   }
 
   const confirmFirstUserData = async userConfirmData => {
-    if (validate(userConfirmData)) {
+    if (validate(userConfirmData) && validatePassword(userConfirmData)) {
       return await updateCustomerData(userConfirmData)
     }
   }
@@ -37,6 +37,20 @@ const useCustomerService = () => {
 
     if (cpf.length < 10) {
       setError('CPF inválido.')
+      return false
+    }
+
+    return true
+  }
+
+  const validatePassword = ({ password }) => {
+    if (!password) {
+      setError('Senha é obrigatória.')
+      return false
+    }
+
+    if (password.length < 7) {
+      setError('Senha deve conter no mínimo 8 caracteres.')
       return false
     }
 
