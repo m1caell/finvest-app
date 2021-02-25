@@ -3,6 +3,8 @@ import Alert from '@material-ui/lab/Alert'
 import Snackbar from '@material-ui/core/Snackbar'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import { SliderCreateWallet } from './slider-create-wallet.component'
+import { WalletContent } from './wallet-content/wallet-content.component'
+import { useHomePage } from '../home.hook'
 import { useAuthService } from '@services/index'
 import { User } from '@models/index'
 import {
@@ -17,6 +19,7 @@ const CustomerContent = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [showSuccessAlert, setShowSuccessAlert] = useState(false)
   const [showFirstDialogAccess, setShowFirstDialogAccess] = useState(false)
+  const { loadWallets } = useHomePage()
 
   const { loggedUser, updateLoggedUser } = useAuthService()
 
@@ -26,6 +29,8 @@ const CustomerContent = () => {
       ?.addEventListener('click', () => setIsOpenDrawer(true))
 
     setShowFirstDialogAccess(loggedUser?.firstLogin)
+
+    loadWallets()
 
     return () => {
       document
@@ -80,8 +85,8 @@ const CustomerContent = () => {
   return (
     <div className="home-page-customer">
       {renderFirstDialogAccess()}
-      <div className="home-page-customer-list">
-        {loggedUser?.selectedWallet?.name}
+      <div>
+        <WalletContent />
       </div>
       <div className="home-page-customer-drawer">
         <SwipeableDrawer
@@ -94,6 +99,7 @@ const CustomerContent = () => {
             <SliderCreateWallet
               onSuccessMessage={() => setShowSuccessAlert(true)}
               setIsOpenDrawer={setIsOpenDrawer}
+              loadWallets={loadWallets}
             />
           </div>
         </SwipeableDrawer>

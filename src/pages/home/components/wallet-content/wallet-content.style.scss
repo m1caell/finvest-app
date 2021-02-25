@@ -1,0 +1,20 @@
+.wallet-content {
+    min-height: 100%;
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+
+    & h1 > span {
+        font-size: 28px;
+    }
+
+    & .header-controls {
+        & > button {
+            margin-right: 16px;
+        }
+    }
+  }
+}
