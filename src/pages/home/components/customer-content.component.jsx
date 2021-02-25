@@ -80,7 +80,9 @@ const CustomerContent = () => {
   return (
     <div className="home-page-customer">
       {renderFirstDialogAccess()}
-      <div className="home-page-customer-list"></div>
+      <div className="home-page-customer-list">
+        {loggedUser?.selectedWallet?.name}
+      </div>
       <div className="home-page-customer-drawer">
         <SwipeableDrawer
           anchor="right"
