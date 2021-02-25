@@ -100,7 +100,7 @@ const CustomerContent = () => {
     <div className="home-page-customer">
       {renderFirstDialogAccess()}
       <div className="home-page-customer-list">
-        <h1>Vai aparecer aqui</h1>
+        <h1>Você esta na cateira [Nome da Carteira]</h1>
         {renderListWallets}
         </div>
       <div className="home-page-customer-drawer">
