@@ -30,6 +30,7 @@
     ],
     "no-unused-vars": "warn",
     "no-debugger": "warn",
-    "prefer-regex-literals": "off"
+    "prefer-regex-literals": "off",
+    "react/display-name": "off"
   }
 }

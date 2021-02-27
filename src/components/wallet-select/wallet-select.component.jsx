@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Menu, MenuItem } from '@material-ui/core'
 import { useAuthService } from '@services/index'
 import PropTypes from 'prop-types'
@@ -6,11 +6,21 @@ import { useHistory } from 'react-router-dom'
 
 import './wallet-select.component.scss'
 
+const WALLET_URL = '/home/wallet/'
 const WalletSelectComponent = ({ id, name, ...props }) => {
   const [anchorEl, setAnchorEl] = useState(null)
 
   const { loggedUser } = useAuthService()
   const history = useHistory()
+
+  useEffect(() => {
+    const isWalletUrl = location.pathname.includes(WALLET_URL)
+
+    if (!isWalletUrl && loggedUser?.walletList.length) {
+      const firstWallet = loggedUser.walletList[0]
+      history.push(`/home/wallet/${firstWallet.id}`)
+    }
+  }, [])
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
