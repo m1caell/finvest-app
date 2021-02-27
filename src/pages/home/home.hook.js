@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { Customer, Wallet, UserConfirmData } from '@models/index'
+import { Customer, UserConfirmData, CreateWallet } from '@models/index'
 import { useCustomerService, useWalletService } from '@services/index'
 import PropTypes from 'prop-types'
 
 const useHomePage = props => {
   const [customers, setCustomers] = useState([])
-  const [wallets, setWallets] = useState([])
+  const [wallet, setWallet] = useState(null)
+
   const {
     createNewCustomer,
     getAllCustomers,
@@ -13,7 +14,9 @@ const useHomePage = props => {
     confirmFirstUserData
   } = useCustomerService()
 
-  const { createNewWallet, walletError, getAllWallets } = useWalletService()
+  const { getWallet } = useWalletService()
+
+  const { createNewWallet, walletError } = useWalletService()
 
   const doSubmitCustomer = async ({ fullName, email, cpf }) => {
     const customer = new Customer({ fullName, email, cpf })
@@ -25,7 +28,7 @@ const useHomePage = props => {
   }
 
   const doSubmitWallet = async ({ name, description }) => {
-    const wallet = new Wallet({ name, description })
+    const wallet = new CreateWallet({ name, description })
     const result = await createNewWallet(wallet)
 
     if (result) {
@@ -50,11 +53,14 @@ const useHomePage = props => {
     }
   }
 
-  const loadWallets = async () => {
-    const result = await getAllWallets()
+  const loadWalletById = async id => {
+    const wallet = await getWallet(id)
 
-    if (result?.userList) {
-      setWallets(result.userList)
+    if (wallet) {
+      setWallet(wallet)
+      return true
+    } else {
+      return false
     }
   }
 
@@ -62,10 +68,10 @@ const useHomePage = props => {
     doSubmitCustomer,
     doSubmitWallet,
     loadCustomers,
-    loadWallets,
     doConfirmData,
     customers,
-    wallets,
+    loadWalletById,
+    wallet,
     error: customerError || walletError
   }
 }

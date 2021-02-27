@@ -7,8 +7,10 @@ import './layout-body.component.scss'
 const LayoutBodyComponent = ({ children }) => {
   return (
     <div className="main-layout">
-      <HeaderComponent />
-      <MenuComponent />
+      <div className="main-layout-fixed">
+        <HeaderComponent />
+        <MenuComponent />
+      </div>
       <div className="main-layout-content">{children}</div>
     </div>
   )

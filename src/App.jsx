@@ -13,6 +13,7 @@ function App() {
           <Switch>
             <PublicRoute path="/login" component={LoginPage} />
             <PrivateRoute path="/" component={HomePage} />
+            <PrivateRoute path="/wallet/:id" component={HomePage} />
           </Switch>
         </Router>
       </AuthProvider>

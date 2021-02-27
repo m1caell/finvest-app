@@ -6,9 +6,17 @@
   padding-top: 0;
   margin: 0 auto;
 
+  &-fixed {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    z-index: 99;
+  }
+
   &-content {
     max-width: $max-width;
     padding: 20px 30px;
     margin: 0 auto;
+    padding-top: 140px;
   }
 }

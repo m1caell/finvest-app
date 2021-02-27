@@ -14,14 +14,41 @@ import {
   DialogTitle
 } from '@material-ui/core'
 import { ConfirmDataModal } from './confirm-data-modal/confirm-data-modal.component'
+import { useLocation, useHistory } from 'react-router-dom'
+
+const WALLET_URL = '/home/wallet/'
+const WALLET_CREATION_SUCCESS_MESSAGE = {
+  text: 'Carteira cadastrada com sucesso.',
+  type: 'success'
+}
+const WALLET_NOT_FOUNT_MESSAGE = {
+  text: 'Carteira não encontrada.',
+  type: 'error'
+}
 
 const CustomerContent = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState(null)
   const [showFirstDialogAccess, setShowFirstDialogAccess] = useState(false)
-  const { loadWallets } = useHomePage()
 
   const { loggedUser, updateLoggedUser } = useAuthService()
+  const { loadWalletById, wallet } = useHomePage()
+  const location = useLocation()
+  const history = useHistory()
+
+  const loadWallet = async () => {
+    const isWalletUrl = location.pathname.includes(WALLET_URL)
+    const urlWalletId = Number(location.pathname.replace(WALLET_URL, ''))
+
+    if (isWalletUrl && urlWalletId) {
+      const findedWithSuccess = await loadWalletById(urlWalletId)
+
+      if (!findedWithSuccess) {
+        setSnackbarMessage(WALLET_NOT_FOUNT_MESSAGE)
+        history.push('/home')
+      }
+    }
+  }
 
   useEffect(() => {
     document
@@ -30,14 +57,16 @@ const CustomerContent = () => {
 
     setShowFirstDialogAccess(loggedUser?.firstLogin)
 
-    loadWallets()
-
     return () => {
       document
         .getElementById('menuIdOption0')
         ?.removeEventListener('click', () => toggleDrawer(true))
     }
   }, [])
+
+  useEffect(() => {
+    loadWallet()
+  }, [location.pathname])
 
   const toggleDrawer = open => event => {
     if (
@@ -56,7 +85,7 @@ const CustomerContent = () => {
     const user = new User({ id, firstLogin: false, name, email, type, token })
 
     setShowFirstDialogAccess(false)
-    setShowSuccessAlert(true)
+    setSnackbarMessage(WALLET_CREATION_SUCCESS_MESSAGE)
     updateLoggedUser(user)
   }
 
@@ -86,7 +115,7 @@ const CustomerContent = () => {
     <div className="home-page-customer">
       {renderFirstDialogAccess()}
       <div>
-        <WalletContent />
+        <WalletContent wallet={wallet} />
       </div>
       <div className="home-page-customer-drawer">
         <SwipeableDrawer
@@ -97,19 +126,23 @@ const CustomerContent = () => {
         >
           <div className="home-page-customer-drawer">
             <SliderCreateWallet
-              onSuccessMessage={() => setShowSuccessAlert(true)}
+              onSuccessMessage={() =>
+                setSnackbarMessage(WALLET_CREATION_SUCCESS_MESSAGE)
+              }
               setIsOpenDrawer={setIsOpenDrawer}
-              loadWallets={loadWallets}
             />
           </div>
         </SwipeableDrawer>
         <Snackbar
-          open={showSuccessAlert}
+          open={!!snackbarMessage}
           autoHideDuration={6000}
-          onClose={() => setShowSuccessAlert(false)}
+          onClose={() => setSnackbarMessage(null)}
         >
-          <Alert onClose={() => setShowSuccessAlert(false)} severity="success">
-            Carteira cadastrada com sucesso.
+          <Alert
+            onClose={() => setSnackbarMessage(null)}
+            severity={snackbarMessage?.type}
+          >
+            {snackbarMessage?.text}
           </Alert>
         </Snackbar>
       </div>

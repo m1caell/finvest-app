@@ -2,14 +2,15 @@ import { useState } from 'react'
 import { Button, Menu, MenuItem } from '@material-ui/core'
 import { useAuthService } from '@services/index'
 import PropTypes from 'prop-types'
+import { useHistory } from 'react-router-dom'
 
 import './wallet-select.component.scss'
-import { User } from '@models/'
 
 const WalletSelectComponent = ({ id, name, ...props }) => {
   const [anchorEl, setAnchorEl] = useState(null)
 
-  const { loggedUser, updateLoggedUser } = useAuthService()
+  const { loggedUser } = useAuthService()
+  const history = useHistory()
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
@@ -20,21 +21,26 @@ const WalletSelectComponent = ({ id, name, ...props }) => {
   }
 
   const onClickItem = wallet => {
-    const user = new User(loggedUser)
-
-    // TODO: fazer request aqui da wallet por id e pegar resultado e salvar na selected wallet
-    user.selectedWallet = wallet
-
-    updateLoggedUser(user)
     handleClose()
+    history.push(`/home/wallet/${wallet.id}`)
+    window.scrollTo(0, 0)
   }
 
-  const renderMenuItem = () =>
-    loggedUser?.walletList.map((wallet, key) => (
-      <MenuItem key={key} onClick={() => onClickItem(wallet)}>
-        <div className="menu-item-content">{wallet.name}</div>
+  const renderMenuItem = () => {
+    if (loggedUser?.walletList.length) {
+      return loggedUser?.walletList.map((wallet, key) => (
+        <MenuItem key={key} onClick={() => onClickItem(wallet)}>
+          <div className="menu-item-content">{wallet.name}</div>
+        </MenuItem>
+      ))
+    }
+
+    return (
+      <MenuItem>
+        <div className="menu-item-content">Você ainda não tem carteiras</div>
       </MenuItem>
-    ))
+    )
+  }
 
   return (
     <>
