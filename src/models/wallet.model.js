@@ -1,7 +1,9 @@
 class Wallet {
-  constructor({ name, description }) {
+  constructor({ walletId, name, description, walletShareList }) {
+    this.walletId = walletId
     this.name = name
     this.description = description
+    this.walletShareList = walletShareList
   }
 }
 

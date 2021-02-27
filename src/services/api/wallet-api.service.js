@@ -16,10 +16,10 @@ const useWalletApi = ({ authorization }) => {
     }
   }
 
-  const getAll = async () => {
+  const getWalletById = async id => {
     try {
       const result = await callGet({
-        url: '/wallet/list'
+        url: `/wallet/${id}`
       })
 
       return result.data
@@ -28,7 +28,7 @@ const useWalletApi = ({ authorization }) => {
     }
   }
 
-  return { createWallet, getAll }
+  return { createWallet, getWalletById }
 }
 
 export { useWalletApi }

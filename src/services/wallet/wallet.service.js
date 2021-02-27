@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { useWalletApi } from '@services/api/wallet-api.service'
 import { useAuthService } from '@services/auth/auth.service'
-import { User, WalletListItem } from '@models/index'
+import { User, Wallet, WalletListItem } from '@models/index'
 
 const useWalletService = () => {
   const [error, setError] = useState(null)
 
   const { authorization, loggedUser, updateLoggedUser } = useAuthService()
 
-  const { createWallet, getAll } = useWalletApi({ authorization })
+  const { createWallet, getWalletById } = useWalletApi({ authorization })
 
   const createNewWallet = async walletModel => {
     if (validate(walletModel)) {
@@ -29,8 +29,12 @@ const useWalletService = () => {
     }
   }
 
-  const getAllWallets = async () => {
-    return await getAll()
+  const getWallet = async id => {
+    const data = await getWalletById(id)
+
+    if (data) {
+      return new Wallet(data)
+    }
   }
 
   const validate = ({ name, description }) => {
@@ -48,7 +52,7 @@ const useWalletService = () => {
     return true
   }
 
-  return { createNewWallet, walletError: error, getAllWallets }
+  return { createNewWallet, walletError: error, getWallet }
 }
 
 export { useWalletService }
