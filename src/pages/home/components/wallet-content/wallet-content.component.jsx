@@ -123,7 +123,7 @@ const WalletContent = ({ wallet }) => {
           Carteira: <strong>{wallet.name}</strong>
         </TitleComponent>
         <div className="header-controls">
-        <Button id="add-share" onclick="contained">Adicionar Ação</Button>
+        <Button id="add-share" onclick={isOpenDrawer}>Adicionar Ação</Button>
         <Button id="update-share" variant="contained">Editar Carteira</Button>
         </div>
       </header>

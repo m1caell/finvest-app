@@ -1,6 +1,15 @@
 import { useState } from 'react'
-import { Customer, UserConfirmData, CreateWallet } from '@models/index'
-import { useCustomerService, useWalletService } from '@services/index'
+import {
+  Customer,
+  UserConfirmData,
+  CreateWallet,
+  CreateShare
+} from '@models/index'
+import {
+  useCustomerService,
+  useWalletService,
+  useShareService
+} from '@services/index'
 import PropTypes from 'prop-types'
 
 const useHomePage = props => {
@@ -17,6 +26,7 @@ const useHomePage = props => {
   const { getWallet } = useWalletService()
 
   const { createNewWallet, walletError } = useWalletService()
+  const { createNewShare, shareError } = useShareService()
 
   const doSubmitCustomer = async ({ fullName, email, cpf }) => {
     const customer = new Customer({ fullName, email, cpf })
@@ -30,6 +40,14 @@ const useHomePage = props => {
   const doSubmitWallet = async ({ name, description }) => {
     const wallet = new CreateWallet({ name, description })
     const result = await createNewWallet(wallet)
+
+    if (result) {
+      props?.onCloseCreateWalletSlider()
+    }
+  }
+  const doSubmitShare = async ({ code }) => {
+    const share = new CreateShare({ code })
+    const result = await createNewShare(share)
 
     if (result) {
       props?.onCloseCreateWalletSlider()
@@ -67,12 +85,14 @@ const useHomePage = props => {
   return {
     doSubmitCustomer,
     doSubmitWallet,
+    doSubmitShare,
     loadCustomers,
     doConfirmData,
     customers,
     loadWalletById,
     wallet,
-    error: customerError || walletError
+    error: customerError || walletError,
+    shareError
   }
 }
 

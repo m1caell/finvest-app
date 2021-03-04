@@ -17,7 +17,7 @@ export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
     const form = event && event.target
 
     doSubmitShare({
-      shareId: form.name.value,
+      shareId: form.code.value,
     })
   }
 
@@ -34,7 +34,7 @@ export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
             label="Código do ativo"
             type="text"
             variant="outlined"
-            inputProps={{ maxLength: 200 }}
+            inputProps={{ maxLength: 10 }}
           />
         </div>
 
