@@ -9,6 +9,7 @@ import { useHomePage } from '../home.hook'
 import PropTypes from 'prop-types'
 import { serializeCPF, getOnlyNumbers } from '@utils/index'
 
+
 export const SliderCreateCustomer = ({
   setIsOpenDrawer,
   onSuccessMessage,
@@ -82,7 +83,6 @@ export const SliderCreateCustomer = ({
             inputProps={{ maxLength: 14 }}
           />
         </div>
-
         <div className="form-row">
           <TextField
             id="password"
