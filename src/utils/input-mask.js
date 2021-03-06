@@ -12,6 +12,20 @@ const serializeCPF = cpf => {
 
   return cpf
 }
+const serializeRG = rg => {
+  const num = rg.replace(/[^\d]/g, '')
+  const len = num.length
+
+  if (len <= 10) {
+    rg = num.replace(/\D/g, '')
+  }
+
+  return rg
+}
+
+const deserializeRG = rg => {
+  return getOnlyNumbers(rg)
+}
 
 const deserializeCPF = cpf => {
   return getOnlyNumbers(cpf)
@@ -21,4 +35,10 @@ const getOnlyNumbers = value => {
   return value.replace(/[^0-9]/gim, '')
 }
 
-export { serializeCPF, deserializeCPF, getOnlyNumbers }
+export {
+  serializeCPF,
+  serializeRG,
+  deserializeCPF,
+  deserializeRG,
+  getOnlyNumbers
+}
