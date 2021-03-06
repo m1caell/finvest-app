@@ -17,7 +17,7 @@ export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
     const form = event && event.target
 
     doSubmitShare({
-      shareId: form.code.value,
+      shareId: form.code.value
     })
   }
 
@@ -30,7 +30,7 @@ export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
       <form onSubmit={onSubmit} className="form" noValidate>
         <div className="form-row">
           <TextField
-            id="shareId"
+            id="shareCode"
             label="Código do ativo"
             type="text"
             variant="outlined"
@@ -58,4 +58,5 @@ export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
 SliderCreateShare.propTypes = {
   setIsOpenDrawer: PropTypes.func,
   onSuccessMessage: PropTypes.func,
+  loadShares: PropTypes.func
 }
