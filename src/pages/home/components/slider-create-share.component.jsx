@@ -17,7 +17,7 @@ export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
     const form = event && event.target
 
     doSubmitShare({
-      shareId: form.code.value
+      shareID: form.code.value
     })
   }
 

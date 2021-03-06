@@ -18,6 +18,11 @@ const SHARE_CREATION_SUCCESS_MESSAGE = {
   type: 'success'
 }
 
+const SHARE_NOT_FOUNT_MESSAGE = {
+  text: 'Ação não encontrada.',
+  type: 'error'
+}
+
 const WalletContent = ({ wallet }) => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState(null)
@@ -27,9 +32,7 @@ const WalletContent = ({ wallet }) => {
   const { loggedUser, updateLoggedUser } = useAuthService()
   const { loadShareById, share } = useHomePage()
 
-  const loadShare = () => {}
-
-  useEffect(() => {
+   useEffect(() => {
     document
       .getElementById('postShare')
       ?.addEventListener('click', () => setIsOpenDrawer(true))
@@ -41,10 +44,6 @@ const WalletContent = ({ wallet }) => {
     }
   }, [])
 
-  useEffect(() => {
-    loadShare()
-  }, [location.pathname])
-
   const toggleDrawer = open => event => {
     if (
       event &&
@@ -55,6 +54,14 @@ const WalletContent = ({ wallet }) => {
     }
 
     setIsOpenDrawer(open)
+  }
+
+  const onSuccessModel = () => {
+    const { id, type, token } = loggedUser
+    const user = new User({ id, type, token })
+
+    setSnackbarMessage(SHARE_CREATION_SUCCESS_MESSAGE)
+    updateLoggedUser(user)
   }
 
   useEffect(() => {
@@ -129,8 +136,8 @@ const WalletContent = ({ wallet }) => {
           Carteira: <strong>{wallet.name}</strong>
         </TitleComponent>
         <div className="header-controls">
-        <Button id="postShare" variant="contained">Adicionar Ação</Button>
-        <Button id="putWallet" variant="contained">Editar Carteira</Button>
+            <Button id='postShare'onClick={() => setIsOpenDrawer(true)} variant="contained">Adicionar Ação</Button>
+            <Button id='putWallet' variant="contained">Editar Carteira</Button>
         </div>
       </header>
       <div className="share-content-main">{renderTableShares()}</div>
