@@ -16,8 +16,8 @@ export const SliderCreateCustomer = ({
   loadCustomers
 }) => {
   const [cpf, setCpf] = useState('')
-  const [rg, setRg] = useState('')
-
+  const [identity, setRG] = useState('')
+ 
   const onCloseCreateCustomerSlider = () => {
     setIsOpenDrawer(false)
     onSuccessMessage(true)
@@ -36,7 +36,7 @@ export const SliderCreateCustomer = ({
       fullName: form.fullName.value,
       email: form.email.value,
       cpf: form.cpf.value,
-      rg: form.rg.value,
+      identity: form.identity.value,
       phone: form.phone.value,
       address: form.address.value
     })
@@ -51,9 +51,9 @@ export const SliderCreateCustomer = ({
   }
   const handleChangeRG = event => {
     const value = event?.target?.value
-    setRg(serializeRG(value))
+    setRG(serializeRG(value))
   }
-
+  
   return (
     <div className="slider-create-customer">
       <TitleComponent>Cadastrar cliente</TitleComponent>
@@ -93,16 +93,17 @@ export const SliderCreateCustomer = ({
         </div>
         <div className="form-row">
           <TextField
-            id="rg"
+            id="identity"
             label="RG"
             type="text"
             variant="outlined"
-            value={rg}
+            value={identity}
             onChange={handleChangeRG}
-            placeholder="xxxxxxxxx"
+            placeholder="xxxxxxxxxx"
             inputProps={{ maxLength: 10 }}
           />
         </div>
+        
         <div className="form-row">
           <TextField
             id="phone"

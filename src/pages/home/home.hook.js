@@ -28,8 +28,22 @@ const useHomePage = props => {
   const { createNewWallet, walletError } = useWalletService()
   const { createNewShare, shareError } = useShareService()
 
-  const doSubmitCustomer = async ({ fullName, email, cpf }) => {
-    const customer = new Customer({ fullName, email, cpf })
+  const doSubmitCustomer = async ({
+    fullName,
+    email,
+    cpf,
+    identity,
+    phone,
+    address
+  }) => {
+    const customer = new Customer({
+      fullName,
+      email,
+      cpf,
+      identity,
+      phone,
+      address
+    })
     const result = await createNewCustomer(customer)
 
     if (result) {

@@ -1,6 +1,7 @@
 export {
-  serializeRG,
   serializeCPF,
+  serializeRG,
   deserializeCPF,
+  deserializeRG,
   getOnlyNumbers
 } from './input-mask'
