@@ -12,8 +12,14 @@ const useCustomerService = () => {
   })
 
   const createNewCustomer = async customerModel => {
-    if (validate(customerModel) && validateCpf(customerModel)) {
+    if (
+      validate(customerModel) &&
+      validateCpf(customerModel) &&
+      validateAddress(customerModel) &&
+      validateRg(customerModel)
+    ) {
       customerModel.cpf = customerModel.cpf.replace(/[^0-9]/g, '')
+      customerModel.identity = customerModel.identity.replace(/[^0-9]/g, '')
 
       return await createCustomer(customerModel)
     }
@@ -37,6 +43,20 @@ const useCustomerService = () => {
 
     if (cpf.length < 10) {
       setError('CPF inválido.')
+      return false
+    }
+
+    return true
+  }
+
+  const validateRg = ({ identity }) => {
+    if (!identity) {
+      setError('RG é obrigatório.')
+      return false
+    }
+
+    if (identity.length < 11) {
+      setError('RG inválido.')
       return false
     }
 
@@ -81,9 +101,20 @@ const useCustomerService = () => {
       setError('Email é inválido.')
       return false
     }
+  }
 
-    setError(null)
-    return true
+  const validateAddress = address => {
+    if (!address) {
+      setError('Endereço completo é obrigatório.')
+      return false
+    }
+
+    const qntWords = address.split(' ')
+
+    if (qntWords.length < 3) {
+      setError('Enderço completo deve conter no mínimo três palavras')
+      return false
+    }
   }
 
   return {

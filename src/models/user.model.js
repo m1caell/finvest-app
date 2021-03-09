@@ -14,6 +14,9 @@ class User {
     type,
     token,
     cpf,
+    rg,
+    phone,
+    address,
     walletList = []
   }) {
     this.id = id

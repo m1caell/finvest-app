@@ -7,7 +7,7 @@ import { TitleComponent } from '@components'
 import Alert from '@material-ui/lab/Alert'
 import { useHomePage } from '../home.hook'
 import PropTypes from 'prop-types'
-import { serializeCPF, getOnlyNumbers } from '@utils/index'
+import { serializeCPF, serializeRG, getOnlyNumbers } from '@utils/index'
 
 
 export const SliderCreateCustomer = ({
@@ -16,7 +16,8 @@ export const SliderCreateCustomer = ({
   loadCustomers
 }) => {
   const [cpf, setCpf] = useState('')
-
+  const [identity, setRG] = useState('')
+ 
   const onCloseCreateCustomerSlider = () => {
     setIsOpenDrawer(false)
     onSuccessMessage(true)
@@ -34,7 +35,10 @@ export const SliderCreateCustomer = ({
     doSubmitCustomer({
       fullName: form.fullName.value,
       email: form.email.value,
-      cpf: form.cpf.value
+      cpf: form.cpf.value,
+      identity: form.identity.value,
+      phone: form.phone.value,
+      address: form.address.value
     })
   }
 
@@ -45,7 +49,11 @@ export const SliderCreateCustomer = ({
     const value = event?.target?.value
     setCpf(serializeCPF(value))
   }
-
+  const handleChangeRG = event => {
+    const value = event?.target?.value
+    setRG(serializeRG(value))
+  }
+  
   return (
     <div className="slider-create-customer">
       <TitleComponent>Cadastrar cliente</TitleComponent>
@@ -83,6 +91,39 @@ export const SliderCreateCustomer = ({
             inputProps={{ maxLength: 14 }}
           />
         </div>
+        <div className="form-row">
+          <TextField
+            id="identity"
+            label="RG"
+            type="text"
+            variant="outlined"
+            value={identity}
+            onChange={handleChangeRG}
+            placeholder="xxxxxxxxxx"
+            inputProps={{ maxLength: 10 }}
+          />
+        </div>
+        
+        <div className="form-row">
+          <TextField
+            id="phone"
+            label="Celular"
+            type="tel"
+            variant="outlined"
+            placeholder="(xx)-xxxxx-xxxx"
+            inputProps={{ maxLength: 11 }}
+          />
+        </div>
+        <div className="form-row">
+          <TextField
+            id="address"
+            label="Endereço"
+            type="text"
+            variant="outlined"
+            inputProps={{ maxLength: 200 }}
+          />
+        </div>
+
         <div className="form-row">
           <TextField
             id="password"
