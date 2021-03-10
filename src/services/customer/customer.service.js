@@ -13,7 +13,8 @@ const useCustomerService = () => {
 
   const createNewCustomer = async customerModel => {
     if (
-      validate(customerModel) &&
+      validateFullName(customerModel) &&
+      validateEmail(customerModel) &&
       validateCpf(customerModel) &&
       validateAddress(customerModel) &&
       validateRg(customerModel)
@@ -30,7 +31,11 @@ const useCustomerService = () => {
   }
 
   const confirmFirstUserData = async userConfirmData => {
-    if (validate(userConfirmData) && validatePassword(userConfirmData)) {
+    if (
+      validateFullName(userConfirmData) &&
+      validateEmail(userConfirmData) &&
+      validatePassword(userConfirmData)
+    ) {
       return await updateCustomerData(userConfirmData)
     }
   }
@@ -55,7 +60,7 @@ const useCustomerService = () => {
       return false
     }
 
-    if (identity.length < 11) {
+    if (identity.length < 9) {
       setError('RG inválido.')
       return false
     }
@@ -77,7 +82,7 @@ const useCustomerService = () => {
     return true
   }
 
-  const validate = ({ fullName, email }) => {
+  const validateFullName = ({ fullName }) => {
     if (!fullName) {
       setError('Nome completo é obrigatório.')
       return false
@@ -90,6 +95,9 @@ const useCustomerService = () => {
       return false
     }
 
+    return true
+  }
+  const validateEmail = ({ email }) => {
     if (!email) {
       setError('Email é obrigatório.')
       return false
@@ -101,9 +109,10 @@ const useCustomerService = () => {
       setError('Email é inválido.')
       return false
     }
+    return true
   }
 
-  const validateAddress = address => {
+  const validateAddress = ({ address }) => {
     if (!address) {
       setError('Endereço completo é obrigatório.')
       return false
@@ -115,6 +124,7 @@ const useCustomerService = () => {
       setError('Enderço completo deve conter no mínimo três palavras')
       return false
     }
+    return true
   }
 
   return {

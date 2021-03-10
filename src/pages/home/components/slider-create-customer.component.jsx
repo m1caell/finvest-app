@@ -16,7 +16,7 @@ export const SliderCreateCustomer = ({
   loadCustomers
 }) => {
   const [cpf, setCpf] = useState('')
-  const [identity, setRG] = useState('')
+  const [identity, setIdentity] = useState('')
  
   const onCloseCreateCustomerSlider = () => {
     setIsOpenDrawer(false)
@@ -51,7 +51,7 @@ export const SliderCreateCustomer = ({
   }
   const handleChangeRG = event => {
     const value = event?.target?.value
-    setRG(serializeRG(value))
+    setIdentity(serializeRG(value))
   }
   
   return (

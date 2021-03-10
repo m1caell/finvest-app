@@ -18,7 +18,8 @@ const useWalletService = () => {
         const user = new User(loggedUser)
         const walletListItem = new WalletListItem({
           id: result.data.walletId,
-          name: result.data.name
+          name: result.data.name,
+          description: result.data.description
         })
         user.walletList.push(walletListItem)
 

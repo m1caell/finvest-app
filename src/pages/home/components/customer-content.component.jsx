@@ -21,6 +21,10 @@ const WALLET_CREATION_SUCCESS_MESSAGE = {
   text: 'Carteira cadastrada com sucesso.',
   type: 'success'
 }
+const CUSTOMER_CREATION_SUCCESS_MESSAGE = {
+  text: 'Cliente confirmado com sucesso.',
+  type: 'success'
+}
 const WALLET_NOT_FOUNT_MESSAGE = {
   text: 'Carteira não encontrada.',
   type: 'error'
@@ -85,7 +89,7 @@ const CustomerContent = () => {
     const user = new User({ id, firstLogin: false, name, email, type, token })
 
     setShowFirstDialogAccess(false)
-    setSnackbarMessage(WALLET_CREATION_SUCCESS_MESSAGE)
+    setSnackbarMessage(CUSTOMER_CREATION_SUCCESS_MESSAGE)
     updateLoggedUser(user)
   }
 
