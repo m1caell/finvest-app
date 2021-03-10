@@ -6,26 +6,13 @@ const USER_TYPE = {
 }
 
 class User {
-  constructor({
-    id,
-    firstLogin,
-    name,
-    email,
-    type,
-    token,
-    cpf,
-    rg,
-    phone,
-    address,
-    walletList = []
-  }) {
+  constructor({ id, firstLogin, name, email, type, token, walletList = [] }) {
     this.id = id
     this.firstLogin = firstLogin
     this.name = name
     this.email = email
     this.type = USER_TYPE[type]
     this.token = token
-    this.cpf = cpf
     this.walletList = walletList.map(wallet => new WalletListItem(wallet))
     this.selectedWallet = null
   }

@@ -59,6 +59,7 @@ const useHomePage = props => {
       props?.onCloseCreateWalletSlider()
     }
   }
+
   const doSubmitShare = async ({ code }) => {
     const share = new CreateShare({ code })
     const result = await createNewShare(share)
@@ -69,9 +70,11 @@ const useHomePage = props => {
   }
 
   const doConfirmData = async ({ fullName, email, password }) => {
+    console.log()
     const userConfirmData = new UserConfirmData({ fullName, email, password })
     const result = await confirmFirstUserData(userConfirmData)
-
+    console.log(userConfirmData)
+    console.log(result)
     if (result) {
       props?.onSuccessDataConfirmation()
     }
