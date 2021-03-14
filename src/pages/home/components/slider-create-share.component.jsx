@@ -3,6 +3,9 @@ import { TitleComponent } from '@components'
 import Alert from '@material-ui/lab/Alert'
 import { useHomePage } from '../home.hook'
 import PropTypes from 'prop-types'
+import { useLocation } from 'react-router-dom'
+
+const WALLET_URL = '/home/wallet/'
 
 export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
   const onCloseCreateShareSlider = () => {
@@ -11,14 +14,21 @@ export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
   }
 
   const { doSubmitShare, error } = useHomePage({ onCloseCreateShareSlider })
+  const location = useLocation()
 
   const onSubmit = event => {
     event.preventDefault()
     const form = event && event.target
 
-    doSubmitShare({
-      shareID: form.code.value
-    })
+    const isWalletUrl = location.pathname.includes(WALLET_URL)
+    const urlWalletId = Number(location.pathname.replace(WALLET_URL, ''))
+
+    if (isWalletUrl && urlWalletId) {
+      doSubmitShare({
+        shareCode: form.shareCode.value,
+        walletId: urlWalletId
+      })
+    }
   }
 
   const renderError = () =>

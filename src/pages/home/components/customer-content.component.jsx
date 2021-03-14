@@ -36,7 +36,7 @@ const CustomerContent = () => {
   const [showFirstDialogAccess, setShowFirstDialogAccess] = useState(false)
 
   const { loggedUser, updateLoggedUser } = useAuthService()
-  const { loadWalletById, wallet } = useHomePage()
+  const { loadWalletById } = useHomePage()
   const location = useLocation()
   const history = useHistory()
 
@@ -119,7 +119,7 @@ const CustomerContent = () => {
     <div className="home-page-customer">
       {renderFirstDialogAccess()}
       <div>
-        <WalletContent wallet={wallet} />
+        <WalletContent />
       </div>
       <div className="home-page-customer-drawer">
         <SwipeableDrawer

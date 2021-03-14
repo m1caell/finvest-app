@@ -1,48 +1,27 @@
 import { useMemo, useState, useEffect } from 'react'
-import Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button'
 import Alert from '@material-ui/lab/Alert'
 import Snackbar from '@material-ui/core/Snackbar'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import { DataGrid } from '@material-ui/data-grid'
-import { useHomePage } from '@pages/home/home.hook'
 import { CardComponent, TitleComponent } from '@components/index'
-import PropTypes from 'prop-types'
 import { SliderCreateShare } from '@pages/home/components/slider-create-share.component'
-import { useAuthService } from '@services/index'
-import { User } from '@models/index'
 
 import './wallet-content.style.scss'
+import { useWalletService } from '@services/'
 
 const SHARE_CREATION_SUCCESS_MESSAGE = {
   text: 'Ação adicionada com sucesso.',
   type: 'success'
 }
 
-const SHARE_NOT_FOUNT_MESSAGE = {
-  text: 'Ação não encontrada.',
-  type: 'error'
-}
-
-const WalletContent = ({ wallet }) => {
+const WalletContent = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState(null)
   const [rows, setRows] = useState([])
   const [selectedRow, setSelectedRow] = useState(null)
 
-  const { loggedUser, updateLoggedUser } = useAuthService()
-  const { loadShareById, share } = useHomePage()
-
-   useEffect(() => {
-    document
-      .getElementById('postShare')
-      ?.addEventListener('click', () => setIsOpenDrawer(true))
-
-    return () => {
-      document
-        .getElementById('postShare')
-        ?.removeEventListener('click', () => toggleDrawer(true))
-    }
-  }, [])
+  const { selectedWallet } = useWalletService()
 
   const toggleDrawer = open => event => {
     if (
@@ -56,32 +35,24 @@ const WalletContent = ({ wallet }) => {
     setIsOpenDrawer(open)
   }
 
-  const onSuccessModel = () => {
-    const { id, type, token } = loggedUser
-    const user = new User({ id, type, token })
-
-    setSnackbarMessage(SHARE_CREATION_SUCCESS_MESSAGE)
-    updateLoggedUser(user)
-  }
-
   useEffect(() => {
-    if (wallet?.walletShareList) {
+    if (selectedWallet?.walletShareList) {
       const rowsPrepared = prepareRows()
       setRows(rowsPrepared)
     }
-  }, [wallet])
+  }, [selectedWallet])
 
   const prepareRows = () => {
-    return wallet.walletShareList.map(
-      ({ walletShareId, share, qntShare, qntWanted }, key) => {
+    return selectedWallet.walletShareList.map(
+      ({ walletShareId, share, qntShare, qntWanted, sector, price }, key) => {
         return {
           id: key,
           walletShareId,
           share,
           qntShare,
           qntWanted,
-          sector: 'Commodities de petróleo',
-          price: 50,
+          sector,
+          price,
           updatedPatrimony: 100,
           currentPatrimony: 50,
           objective: 50,
@@ -129,15 +100,19 @@ const WalletContent = ({ wallet }) => {
     )
   }
 
-  return wallet ? (
+  return selectedWallet ? (
     <CardComponent className="wallet-content">
       <header className="wallet-content-header">
         <TitleComponent>
-          Carteira: <strong>{wallet.name}</strong>
+          Carteira: <strong>{selectedWallet.name}</strong>
         </TitleComponent>
         <div className="header-controls">
-            <Button id='postShare'onClick={() => setIsOpenDrawer(true)} variant="contained">Adicionar Ação</Button>
-            <Button id='putWallet' variant="contained">Editar Carteira</Button>
+          <Button onClick={() => setIsOpenDrawer(true)} variant="contained">
+            Adicionar Ação
+          </Button>
+          <Button id="putWallet" variant="contained">
+            Editar Carteira
+          </Button>
         </div>
       </header>
       <div className="share-content-main">{renderTableShares()}</div>
@@ -172,10 +147,6 @@ const WalletContent = ({ wallet }) => {
       </div>
     </CardComponent>
   ) : null
-}
-
-WalletContent.propTypes = {
-  wallet: PropTypes.object
 }
 
 export { WalletContent }

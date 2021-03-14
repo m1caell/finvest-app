@@ -28,7 +28,19 @@ const useShareApi = ({ authorization }) => {
     }
   }
 
-  return { createShare, getShareById }
+  const checkIfCodeIsValid = async shareCode => {
+    try {
+      const result = await callGet({
+        url: `/share/check/${shareCode}`
+      })
+
+      return result.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  return { createShare, getShareById, checkIfCodeIsValid }
 }
 
 export { useShareApi }

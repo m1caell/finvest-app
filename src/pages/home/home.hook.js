@@ -14,7 +14,6 @@ import PropTypes from 'prop-types'
 
 const useHomePage = props => {
   const [customers, setCustomers] = useState([])
-  const [wallet, setWallet] = useState(null)
 
   const {
     createNewCustomer,
@@ -26,7 +25,7 @@ const useHomePage = props => {
   const { getWallet } = useWalletService()
 
   const { createNewWallet, walletError } = useWalletService()
-  const { createNewShare, shareError } = useShareService()
+  const { createNewShare, checkShareCode, shareError } = useShareService()
 
   const doSubmitCustomer = async ({
     fullName,
@@ -52,29 +51,37 @@ const useHomePage = props => {
   }
 
   const doSubmitWallet = async ({ name, description }) => {
-    const wallet = new CreateWallet({ name, description })
-    const result = await createNewWallet(wallet)
+    const createWallet = new CreateWallet({ name, description })
+    const result = await createNewWallet(createWallet)
 
     if (result) {
       props?.onCloseCreateWalletSlider()
     }
   }
 
-  const doSubmitShare = async ({ code }) => {
-    const share = new CreateShare({ code })
-    const result = await createNewShare(share)
+  const doSubmitShare = async ({ shareCode, walletId }) => {
+    const isValid = await checkShareCode(shareCode)
 
-    if (result) {
-      props?.onCloseCreateWalletSlider()
+    if (isValid) {
+      const share = new CreateShare({
+        walletId,
+        shareCode,
+        qntShare: 0,
+        qntWanted: 0
+      })
+
+      const result = await createNewShare(share)
+
+      if (result) {
+        props?.onCloseCreateShareSlider()
+        await loadWalletById(walletId)
+      }
     }
   }
 
   const doConfirmData = async ({ fullName, email, password }) => {
-    console.log()
     const userConfirmData = new UserConfirmData({ fullName, email, password })
     const result = await confirmFirstUserData(userConfirmData)
-    console.log(userConfirmData)
-    console.log(result)
     if (result) {
       props?.onSuccessDataConfirmation()
     }
@@ -89,14 +96,9 @@ const useHomePage = props => {
   }
 
   const loadWalletById = async id => {
-    const wallet = await getWallet(id)
+    const walletResult = await getWallet(id)
 
-    if (wallet) {
-      setWallet(wallet)
-      return true
-    } else {
-      return false
-    }
+    return walletResult
   }
 
   return {
@@ -107,9 +109,7 @@ const useHomePage = props => {
     doConfirmData,
     customers,
     loadWalletById,
-    wallet,
-    error: customerError || walletError,
-    shareError
+    error: customerError || walletError || shareError
   }
 }
 
