@@ -1,9 +1,8 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Button from '@material-ui/core/Button'
 import Alert from '@material-ui/lab/Alert'
 import Snackbar from '@material-ui/core/Snackbar'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
-import { DataGrid } from '@material-ui/data-grid'
 import { CardComponent, TitleComponent } from '@components/index'
 import { SliderCreateShare } from '@pages/home/components/slider-create-share.component'
 
@@ -19,7 +18,6 @@ const WalletContent = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState(null)
   const [rows, setRows] = useState([])
-  const [selectedRow, setSelectedRow] = useState(null)
 
   const { selectedWallet } = useWalletService()
 
@@ -44,58 +42,104 @@ const WalletContent = () => {
 
   const prepareRows = () => {
     return selectedWallet.walletShareList.map(
-      ({ walletShareId, share, qntShare, qntWanted, sector, price }, key) => {
+      (
+        {
+          walletShareId,
+          share = '-',
+          qntShare = 0,
+          qntWanted = 0,
+          sector = 'Sem informação a exibir',
+          price = 'Falha',
+          currentHeritage = 0,
+          currentParticipation = 0,
+          distanceFromQntWanted = 0,
+          suggestion = 0
+        },
+        key
+      ) => {
         return {
-          id: key,
           walletShareId,
           share,
           qntShare,
           qntWanted,
           sector,
           price,
-          updatedPatrimony: 100,
-          currentPatrimony: 50,
-          objective: 50,
-          objectiveDistance: 50,
-          suggestion: 100
+          currentHeritage,
+          currentParticipation,
+          distanceFromQntWanted,
+          suggestion
         }
       }
     )
   }
 
-  const columns = useMemo(
-    () => [
-      { field: 'walletShareId', headerName: 'ID', width: 100 },
-      { field: 'share', headerName: 'Código', width: 100 },
-      { field: 'sector', headerName: 'Setor', width: 200 },
-      { field: 'qntShare', headerName: 'Quantidade', width: 130 },
-      { field: 'price', headerName: 'Cotação', width: 110 },
-      {
-        field: 'updatedPatrimony',
-        headerName: 'Patrimônio Atualizado',
-        width: 200
-      },
-      { field: 'currentPatrimony', headerName: 'Patrimônio Atual', width: 160 },
-      { field: 'objective', headerName: 'Objetivo', width: 130 },
-      {
-        field: 'objectiveDistance',
-        headerName: 'Distância do Objetivo',
-        width: 190
-      },
-      { field: 'suggestion', headerName: 'Recomendação R$', width: 180 }
-    ],
-    []
-  )
+  const handleBlurQuantity = ({ event, itemShare }) => {
+    if (itemShare.qntShare !== Number(event.target.value)) {
+      itemShare.qntShare = Number(event.target.value)
+
+      // chamar edição
+    }
+  }
+
+  const handleBlurObjective = ({ event, itemShare }) => {
+    if (itemShare.qntWanted !== Number(event.target.value)) {
+      itemShare.qntWanted = Number(event.target.value)
+
+      // chamar edição
+    }
+  }
+
+  const renderRows = () => {
+    if (rows.length) {
+      return rows.map((itemShare, key) => {
+        return (
+          <tr key={key}>
+            <td>{itemShare.share}</td>
+            <td>{itemShare.sector}</td>
+            <td>
+              <input
+                type="number"
+                placeholder="Ex.: 1"
+                onBlur={event => handleBlurQuantity({ event, itemShare })}
+                defaultValue={itemShare.qntShare}
+              />
+            </td>
+            <td>R$ {itemShare.price}</td>
+            <td>R$ {itemShare.currentHeritage}</td>
+            <td>{itemShare.currentParticipation}%</td>
+            <td>
+              <input
+                type="number"
+                placeholder="Ex.: 1%"
+                onBlur={event => handleBlurObjective({ event, itemShare })}
+                defaultValue={itemShare.qntWanted}
+              />
+            </td>
+            <td>{itemShare.distanceFromQntWanted}%</td>
+            <td>{itemShare.suggestion}</td>
+          </tr>
+        )
+      })
+    }
+  }
 
   const renderTableShares = () => {
     return (
-      <div className="wallet-content-table">
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pageSize={10}
-          onRowSelected={param => setSelectedRow(param)}
-        />
+      <div className="table-wrapper">
+        <table className="wallet-content-table">
+          <tr>
+            <th>Ativo</th>
+            <th>Setor</th>
+            <th>Quantidade</th>
+            <th>Cotação</th>
+            <th>Patrimônio</th>
+            <th>Participação</th>
+            <th>Objetivo</th>
+            <th>Distância do objetivo</th>
+            <th>Quantas ações comprar?</th>
+          </tr>
+          {renderRows()}
+        </table>
       </div>
     )
   }
