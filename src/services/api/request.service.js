@@ -1,7 +1,10 @@
 import axios from 'axios'
+import { useLoadingService } from '@services/loading/loading.service'
 
 const useRequest = extraConfig => {
   const pathUrl = 'http://localhost:8080/api'
+
+  const { showLoading, hideLoading } = useLoadingService()
 
   const axiosConfig = {
     headers: {
@@ -11,18 +14,22 @@ const useRequest = extraConfig => {
 
   axios.interceptors.request.use(
     config => {
+      showLoading()
       return config
     },
     error => {
+      hideLoading()
       return Promise.reject(error)
     }
   )
 
   axios.interceptors.response.use(
     response => {
+      hideLoading()
       return response
     },
     error => {
+      hideLoading()
       return Promise.reject(error)
     }
   )
