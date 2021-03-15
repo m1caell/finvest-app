@@ -60,6 +60,7 @@ const useWalletService = () => {
 
   return {
     createNewWallet,
+    setWallet,
     walletError: error,
     getWallet,
     selectedWallet: wallet

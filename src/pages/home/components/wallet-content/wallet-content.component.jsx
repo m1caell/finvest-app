@@ -74,7 +74,10 @@ const WalletContent = () => {
   }
 
   const handleBlurQuantity = ({ event, itemShare }) => {
-    if (itemShare.qntShare !== Number(event.target.value)) {
+    if (
+      Number(event.target.value) &&
+      itemShare.qntShare !== Number(event.target.value)
+    ) {
       itemShare.qntShare = Number(event.target.value)
 
       // chamar edição
@@ -82,64 +85,72 @@ const WalletContent = () => {
   }
 
   const handleBlurObjective = ({ event, itemShare }) => {
-    if (itemShare.qntWanted !== Number(event.target.value)) {
+    if (
+      Number(event.target.value) &&
+      itemShare.qntWanted !== Number(event.target.value)
+    ) {
       itemShare.qntWanted = Number(event.target.value)
 
       // chamar edição
     }
   }
 
-  const renderRows = () => {
-    if (rows.length) {
-      return rows.map((itemShare, key) => {
-        return (
-          <tr key={key}>
-            <td>{itemShare.share}</td>
-            <td>{itemShare.sector}</td>
-            <td>
-              <input
-                type="number"
-                placeholder="Ex.: 1"
-                onBlur={event => handleBlurQuantity({ event, itemShare })}
-                defaultValue={itemShare.qntShare}
-              />
-            </td>
-            <td>R$ {itemShare.price}</td>
-            <td>R$ {itemShare.currentHeritage}</td>
-            <td>{itemShare.currentParticipation}%</td>
-            <td>
-              <input
-                type="number"
-                placeholder="Ex.: 1%"
-                onBlur={event => handleBlurObjective({ event, itemShare })}
-                defaultValue={itemShare.qntWanted}
-              />
-            </td>
-            <td>{itemShare.distanceFromQntWanted}%</td>
-            <td>{itemShare.suggestion}</td>
-          </tr>
-        )
-      })
-    }
-  }
+  const renderRows = () =>
+    rows.map((itemShare, key) => {
+      return (
+        <tr key={key}>
+          <td>{itemShare.share}</td>
+          <td>{itemShare.sector}</td>
+          <td>
+            <input
+              type="number"
+              placeholder="Ex.: 1"
+              onBlur={event => handleBlurQuantity({ event, itemShare })}
+              defaultValue={itemShare.qntShare}
+            />
+          </td>
+          <td>R$ {itemShare.price}</td>
+          <td>R$ {itemShare.currentHeritage}</td>
+          <td>{Number(itemShare.currentParticipation) || 0}%</td>
+          <td>
+            <input
+              type="number"
+              placeholder="Ex.: 1%"
+              onBlur={event => handleBlurObjective({ event, itemShare })}
+              defaultValue={itemShare.qntWanted}
+            />
+          </td>
+          <td>{Number(itemShare.distanceFromQntWanted) || 0}%</td>
+          <td>{Number(itemShare.suggestion) || 0}</td>
+        </tr>
+      )
+    })
 
   const renderTableShares = () => {
+    if (rows.length) {
+      return (
+        <div className="table-wrapper">
+          <table className="wallet-content-table">
+            <tr>
+              <th>Ativo</th>
+              <th>Setor</th>
+              <th>Quantidade</th>
+              <th>Cotação</th>
+              <th>Patrimônio</th>
+              <th>Participação</th>
+              <th>Objetivo</th>
+              <th>Distância do objetivo</th>
+              <th>Quantas ações comprar?</th>
+            </tr>
+            {renderRows()}
+          </table>
+        </div>
+      )
+    }
+
     return (
-      <div className="table-wrapper">
-        <table className="wallet-content-table">
-          <tr>
-            <th>Ativo</th>
-            <th>Setor</th>
-            <th>Quantidade</th>
-            <th>Cotação</th>
-            <th>Patrimônio</th>
-            <th>Participação</th>
-            <th>Objetivo</th>
-            <th>Distância do objetivo</th>
-            <th>Quantas ações comprar?</th>
-          </tr>
-          {renderRows()}
-        </table>
+      <div className="table-content-empty">
+        Ainda não há ações adicionadas nesta carteira.
       </div>
     )
   }

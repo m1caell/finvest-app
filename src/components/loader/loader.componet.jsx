@@ -13,7 +13,7 @@ const LoaderComponent = () => {
   return (
     <div className="loader-wrapper">
       <div className="loader-content">
-        <CircularProgress style={{ width: 60, height: 60 }} color="#000" />
+        <CircularProgress style={{ width: 60, height: 60 }} />
       </div>
     </div>
   )

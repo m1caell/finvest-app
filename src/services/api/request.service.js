@@ -1,10 +1,13 @@
 import axios from 'axios'
 import { useLoadingService } from '@services/loading/loading.service'
+import { useHistory } from 'react-router-dom'
 
+const LS_LOGGED_USER_NAME = 'loggedUser'
 const useRequest = extraConfig => {
   const pathUrl = 'http://localhost:8080/api'
 
   const { showLoading, hideLoading } = useLoadingService()
+  const history = useHistory()
 
   const axiosConfig = {
     headers: {
@@ -29,6 +32,10 @@ const useRequest = extraConfig => {
       return response
     },
     error => {
+      if (error?.response?.data?.status === 403) {
+        localStorage.removeItem(LS_LOGGED_USER_NAME)
+        history.push('/login?authorizationFail=true')
+      }
       hideLoading()
       return Promise.reject(error)
     }

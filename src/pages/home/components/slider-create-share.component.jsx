@@ -25,7 +25,7 @@ export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
 
     if (isWalletUrl && urlWalletId) {
       doSubmitShare({
-        shareCode: form.shareCode.value,
+        shareCode: form.shareCode.value?.toUpperCase(),
         walletId: urlWalletId
       })
     }
