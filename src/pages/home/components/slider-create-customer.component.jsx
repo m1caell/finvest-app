@@ -7,7 +7,7 @@ import { TitleComponent } from '@components'
 import Alert from '@material-ui/lab/Alert'
 import { useHomePage } from '../home.hook'
 import PropTypes from 'prop-types'
-import { serializeCPF, serializeRG, getOnlyNumbers } from '@utils/index'
+import { serializeCPF, serializeRG, serializePhone,  getOnlyNumbers } from '@utils/index'
 
 
 export const SliderCreateCustomer = ({
@@ -17,6 +17,7 @@ export const SliderCreateCustomer = ({
 }) => {
   const [cpf, setCpf] = useState('')
   const [identity, setIdentity] = useState('')
+  const [phone, setPhone] = useState('')
  
   const onCloseCreateCustomerSlider = () => {
     setIsOpenDrawer(false)
@@ -52,6 +53,10 @@ export const SliderCreateCustomer = ({
   const handleChangeRG = event => {
     const value = event?.target?.value
     setIdentity(serializeRG(value))
+  }
+  const handleChangePhone = event => {
+    const value = event?.target?.value
+    setPhone(serializePhone(value))
   }
   
   return (
@@ -110,8 +115,10 @@ export const SliderCreateCustomer = ({
             label="Celular"
             type="tel"
             variant="outlined"
+            value={phone}
+            onChange={handleChangePhone}
             placeholder="(xx)-xxxxx-xxxx"
-            inputProps={{ maxLength: 11 }}
+            inputProps={{ maxLength: 16 }}
           />
         </div>
         <div className="form-row">

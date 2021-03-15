@@ -10,6 +10,8 @@ import {
   useWalletService,
   useShareService
 } from '@services/index'
+import { validateFullName, validateEmail, validatePassword } from '@utils/index'
+
 import PropTypes from 'prop-types'
 
 const useHomePage = props => {
@@ -80,10 +82,17 @@ const useHomePage = props => {
   }
 
   const doConfirmData = async ({ fullName, email, password }) => {
-    const userConfirmData = new UserConfirmData({ fullName, email, password })
-    const result = await confirmFirstUserData(userConfirmData)
-    if (result) {
-      props?.onSuccessDataConfirmation()
+    if (
+      validateFullName(fullName) &&
+      validateEmail(email) &&
+      validatePassword(password)
+    ) {
+      const userConfirmData = new UserConfirmData({ fullName, email, password })
+      const result = await confirmFirstUserData(userConfirmData)
+
+      if (result) {
+        return props?.onSuccessDataConfirmation()
+      }
     }
   }
 
