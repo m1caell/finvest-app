@@ -5,9 +5,9 @@ import Snackbar from '@material-ui/core/Snackbar'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import { CardComponent, TitleComponent } from '@components/index'
 import { SliderCreateShare } from '@pages/home/components/slider-create-share.component'
+import { useWalletService } from '@services/'
 
 import './wallet-content.style.scss'
-import { useWalletService } from '@services/'
 
 const SHARE_CREATION_SUCCESS_MESSAGE = {
   text: 'Ação adicionada com sucesso.',
