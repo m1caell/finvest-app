@@ -36,7 +36,7 @@ export const ConfirmDataModal = ({ onSuccess }) => {
     event.preventDefault()
     const form = event && event.target
 
-    doConfirmData({
+     doConfirmData({
       fullName: form.fullName.value,
       email: form.email.value,
       password: form.password.value
