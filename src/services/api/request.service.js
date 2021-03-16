@@ -4,7 +4,9 @@ import { useHistory } from 'react-router-dom'
 
 const LS_LOGGED_USER_NAME = 'loggedUser'
 const useRequest = extraConfig => {
-  const pathUrl = 'http://localhost:8080/api'
+  const { REACT_APP_URL } = process.env
+
+  const pathUrl = `${REACT_APP_URL}/api`
 
   const { showLoading, hideLoading } = useLoadingService()
   const history = useHistory()
