@@ -8,9 +8,9 @@ import {
 import {
   useCustomerService,
   useWalletService,
-  useShareService
+  useShareService,
+  useValidateService
 } from '@services/index'
-import { validateFullName, validateEmail, validatePassword } from '@utils/index'
 
 import PropTypes from 'prop-types'
 
@@ -23,6 +23,12 @@ const useHomePage = props => {
     customerError,
     confirmFirstUserData
   } = useCustomerService()
+
+  const {
+    validateFullName,
+    validateEmail,
+    validatePassword
+  } = useValidateService()
 
   const { getWallet } = useWalletService()
 

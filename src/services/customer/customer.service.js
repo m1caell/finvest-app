@@ -1,16 +1,18 @@
 import { useCustomerApi } from '@services/api/customer-api.service'
 import { useAuthService } from '@services/auth/auth.service'
-import {
-  validateFullName,
-  validateEmail,
-  validateCpf,
-  validateAddress,
-  validatePassword,
-  validateRg
-} from '@utils/index'
+import { useValidateService } from '@services/validate/validate.service'
 
 const useCustomerService = () => {
   const { authorization } = useAuthService()
+
+  const {
+    validateFullName,
+    validateEmail,
+    validateCpf,
+    validateAddress,
+    validateRg,
+    validatePassword
+  } = useValidateService()
 
   const { createCustomer, getAll, updateCustomerData } = useCustomerApi({
     authorization
