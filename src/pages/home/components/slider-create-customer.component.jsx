@@ -50,10 +50,7 @@ export const SliderCreateCustomer = ({
     const value = event?.target?.value
     setCpf(serializeCPF(value))
   }
-  const handleChangeRG = event => {
-    const value = event?.target?.value
-    setIdentity(serializeRG(value))
-  }
+
   const handleChangePhone = event => {
     const value = event?.target?.value
     setPhone(serializePhone(value))
@@ -102,8 +99,6 @@ export const SliderCreateCustomer = ({
             label="RG"
             type="text"
             variant="outlined"
-            value={identity}
-            onChange={handleChangeRG}
             placeholder="xxxxxxxxxx"
             inputProps={{ maxLength: 10 }}
           />
