@@ -67,7 +67,7 @@ const WalletContent = ({ currentWalletId }) => {
           qntWanted,
           sector,
           price,
-          currentHeritage,
+          currentHeritage: currentHeritage || price * qntShare,
           currentParticipation,
           distanceFromQntWanted,
           suggestion
@@ -93,6 +93,8 @@ const WalletContent = ({ currentWalletId }) => {
   }
 
   const handleBlurQuantity = ({ event, itemShare }) => {
+    event.preventDefault()
+
     if (
       Number(event.target.value) &&
       itemShare.qntShare !== Number(event.target.value)
@@ -104,6 +106,8 @@ const WalletContent = ({ currentWalletId }) => {
   }
 
   const handleBlurObjective = ({ event, itemShare }) => {
+    event.preventDefault()
+
     if (
       Number(event.target.value) &&
       itemShare.qntWanted !== Number(event.target.value)
@@ -128,15 +132,17 @@ const WalletContent = ({ currentWalletId }) => {
               defaultValue={itemShare.qntShare}
             />
           </td>
-          <td>R$ {itemShare.price}</td>
-          <td>R$ {itemShare.currentHeritage}</td>
-          <td>{Number(itemShare.currentParticipation) || 0}%</td>
+          <td>R$ {itemShare.price?.toFixed(2)}</td>
+          <td>R$ {itemShare.currentHeritage?.toFixed(2)}</td>
+          <td>{Number(itemShare.currentParticipation)?.toFixed(2) || 0}%</td>
           <td>
             <input
               type="number"
               placeholder="Ex.: 1%"
               onBlur={event => handleBlurObjective({ event, itemShare })}
               defaultValue={itemShare.qntWanted}
+              max={100}
+              min={0}
             />
           </td>
           <td>{Number(itemShare.distanceFromQntWanted) || 0}%</td>
