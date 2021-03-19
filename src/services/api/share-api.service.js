@@ -1,13 +1,26 @@
 import { useRequest } from './request.service'
 
 const useShareApi = ({ authorization }) => {
-  const { callPost, callGet } = useRequest({ authorization })
+  const { callPost, callGet, callPut } = useRequest({ authorization })
 
   const createShare = async shareModel => {
     try {
       const result = await callPost({
         url: '/share',
         data: shareModel
+      })
+
+      return result.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const updateShare = async updateShareModel => {
+    try {
+      const result = await callPut({
+        url: '/share',
+        data: updateShareModel
       })
 
       return result.data
@@ -40,7 +53,7 @@ const useShareApi = ({ authorization }) => {
     }
   }
 
-  return { createShare, getShareById, checkIfCodeIsValid }
+  return { createShare, getShareById, checkIfCodeIsValid, updateShare }
 }
 
 export { useShareApi }
