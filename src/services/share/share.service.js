@@ -8,13 +8,28 @@ const useShareService = () => {
 
   const { authorization } = useAuthService()
 
-  const { createShare, getShareById, checkIfCodeIsValid } = useShareApi({
+  const {
+    createShare,
+    getShareById,
+    checkIfCodeIsValid,
+    updateShare
+  } = useShareApi({
     authorization
   })
 
   const createNewShare = async shareModel => {
     if (validate(shareModel)) {
       const result = await createShare(shareModel)
+
+      if (result && result.data) {
+        return result
+      }
+    }
+  }
+
+  const updateCurrentShare = async shareUpdateModel => {
+    if (validate(shareUpdateModel)) {
+      const result = await updateShare(shareUpdateModel)
 
       if (result && result.data) {
         return result
@@ -50,7 +65,13 @@ const useShareService = () => {
     setError('Código inválido.')
   }
 
-  return { createNewShare, shareError: error, getShare, checkShareCode }
+  return {
+    createNewShare,
+    shareError: error,
+    getShare,
+    checkShareCode,
+    updateCurrentShare
+  }
 }
 
 export { useShareService }

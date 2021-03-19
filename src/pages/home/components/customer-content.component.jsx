@@ -34,6 +34,7 @@ const CustomerContent = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState(null)
   const [showFirstDialogAccess, setShowFirstDialogAccess] = useState(false)
+  const [currentWalletId, setCurrentWalletId] = useState(null)
 
   const { loggedUser, updateLoggedUser } = useAuthService()
   const { loadWalletById } = useHomePage()
@@ -46,9 +47,11 @@ const CustomerContent = () => {
 
     if (isWalletUrl && urlWalletId) {
       const findedWithSuccess = await loadWalletById(urlWalletId)
+      setCurrentWalletId(urlWalletId)
 
       if (!findedWithSuccess) {
         setSnackbarMessage(WALLET_NOT_FOUNT_MESSAGE)
+        setCurrentWalletId(null)
         history.push('/home')
       }
     }
@@ -119,7 +122,7 @@ const CustomerContent = () => {
     <div className="home-page-customer">
       {renderFirstDialogAccess()}
       <div>
-        <WalletContent />
+        <WalletContent currentWalletId={currentWalletId} />
       </div>
       <div className="home-page-customer-drawer">
         <SwipeableDrawer

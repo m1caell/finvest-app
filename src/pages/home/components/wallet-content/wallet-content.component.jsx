@@ -5,7 +5,9 @@ import Snackbar from '@material-ui/core/Snackbar'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import { CardComponent, TitleComponent } from '@components/index'
 import { SliderCreateShare } from '@pages/home/components/slider-create-share.component'
-import { useWalletService } from '@services/'
+import { useWalletService, useShareService } from '@services/'
+import { UpdateShare } from '@models/updateShare.model'
+import PropTypes from 'prop-types'
 
 import './wallet-content.style.scss'
 
@@ -14,12 +16,13 @@ const SHARE_CREATION_SUCCESS_MESSAGE = {
   type: 'success'
 }
 
-const WalletContent = () => {
+const WalletContent = ({ currentWalletId }) => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState(null)
   const [rows, setRows] = useState([])
 
-  const { selectedWallet } = useWalletService()
+  const { selectedWallet, getWallet } = useWalletService()
+  const { updateCurrentShare } = useShareService()
 
   const toggleDrawer = open => event => {
     if (
@@ -73,6 +76,22 @@ const WalletContent = () => {
     )
   }
 
+  const updateShare = async ({ walletShareId, share, qntShare, qntWanted }) => {
+    const shareModel = new UpdateShare({
+      walletShareId,
+      walletId: currentWalletId,
+      shareCode: share,
+      qntShare,
+      qntWanted
+    })
+
+    const result = await updateCurrentShare(shareModel)
+
+    if (result) {
+      getWallet(currentWalletId)
+    }
+  }
+
   const handleBlurQuantity = ({ event, itemShare }) => {
     if (
       Number(event.target.value) &&
@@ -80,7 +99,7 @@ const WalletContent = () => {
     ) {
       itemShare.qntShare = Number(event.target.value)
 
-      // chamar edição
+      updateShare(itemShare)
     }
   }
 
@@ -91,7 +110,7 @@ const WalletContent = () => {
     ) {
       itemShare.qntWanted = Number(event.target.value)
 
-      // chamar edição
+      updateShare(itemShare)
     }
   }
 
@@ -202,6 +221,10 @@ const WalletContent = () => {
       </div>
     </CardComponent>
   ) : null
+}
+
+WalletContent.propTypes = {
+  currentWalletId: PropTypes.number
 }
 
 export { WalletContent }
