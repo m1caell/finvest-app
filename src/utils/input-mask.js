@@ -17,23 +17,25 @@ const deserializeCPF = cpf => {
   return getOnlyNumbers(cpf)
 }
 
-const serializeRG = identity => {
-  const num = identity.replace(/[^\d]/g, '')
+const serializePhone = phone => {
+  const num = phone.replace(/[^\d]/g, '')
   const len = num.length
 
   if (len <= 6) {
-    identity = num.replace(/(\d{2})(\d{1,3})/g, '$1$2')
-  } else if (len <= 9) {
-    identity = num.replace(/(\d{2})(\d{2})(\d{1,3})/g, '$1$2$3')
+    phone = num.replace(/(\d{2})(\d{1,2})/g, '($1$2)')
+    console.log(num)
+  } else if (len <= 14) {
+    phone = num.replace(/(\d{2})(\d{5})(\d{1,3})/g, '($1) $2-$3')
+    console.log(num)
   } else {
-    identity = num.replace(/(\d{2})(\d{2})(\d{2})(\d{1,2})/g, '$1$2$3$4')
+    phone = num.replace(/(\d{2})(\d{3})(\d{3})(\d{1,2})/g, '($1) $2-$3')
+    console.log(num)
   }
-
-  return identity
+  return phone
 }
 
-const deserializeRG = identity => {
-  return getOnlyNumbers(identity)
+const deserializePhone = phone => {
+  return phone.replace(/[^0-11]/gim, '')
 }
 
 const getOnlyNumbers = value => {
@@ -42,8 +44,8 @@ const getOnlyNumbers = value => {
 
 export {
   serializeCPF,
-  serializeRG,
+  serializePhone,
   deserializeCPF,
-  deserializeRG,
+  deserializePhone,
   getOnlyNumbers
 }

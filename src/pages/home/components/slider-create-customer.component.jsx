@@ -7,7 +7,7 @@ import { TitleComponent } from '@components'
 import Alert from '@material-ui/lab/Alert'
 import { useHomePage } from '../home.hook'
 import PropTypes from 'prop-types'
-import { serializeCPF, serializeRG, getOnlyNumbers } from '@utils/index'
+import { serializeCPF, serializePhone,  getOnlyNumbers } from '@utils/index'
 
 
 export const SliderCreateCustomer = ({
@@ -16,7 +16,7 @@ export const SliderCreateCustomer = ({
   loadCustomers
 }) => {
   const [cpf, setCpf] = useState('')
-  const [identity, setIdentity] = useState('')
+  const [phone, setPhone] = useState('')
  
   const onCloseCreateCustomerSlider = () => {
     setIsOpenDrawer(false)
@@ -49,9 +49,10 @@ export const SliderCreateCustomer = ({
     const value = event?.target?.value
     setCpf(serializeCPF(value))
   }
-  const handleChangeRG = event => {
+
+  const handleChangePhone = event => {
     const value = event?.target?.value
-    setIdentity(serializeRG(value))
+    setPhone(serializePhone(value))
   }
   
   return (
@@ -97,8 +98,6 @@ export const SliderCreateCustomer = ({
             label="RG"
             type="text"
             variant="outlined"
-            value={identity}
-            onChange={handleChangeRG}
             placeholder="xxxxxxxxxx"
             inputProps={{ maxLength: 10 }}
           />
@@ -110,8 +109,10 @@ export const SliderCreateCustomer = ({
             label="Celular"
             type="tel"
             variant="outlined"
+            value={phone}
+            onChange={handleChangePhone}
             placeholder="(xx)-xxxxx-xxxx"
-            inputProps={{ maxLength: 11 }}
+            inputProps={{ maxLength: 16 }}
           />
         </div>
         <div className="form-row">
