@@ -1,12 +1,25 @@
+import { useEffect, useState } from 'react'
 import { TextField, Button } from '@material-ui/core'
 import Alert from '@material-ui/lab/Alert'
 import { ReactComponent as FinvestLogo } from '@static/finvest-logo.svg'
 import { useLoginPage } from './login.hook'
+import { useLocation } from 'react-router-dom'
+import Snackbar from '@material-ui/core/Snackbar'
 
 import './login.page.scss'
 
 function LoginPage() {
   const { doLogin, error } = useLoginPage()
+  const [snackError, setSnackError] = useState('')
+  const location = useLocation()
+
+  useEffect(() => {
+    if (location.search === '?authorizationFail=true') {
+      setSnackError('Seu token expirou, faça login novamente.')
+    } else {
+      setSnackError('')
+    }
+  }, [])
 
   const onSubmit = event => {
     event.preventDefault()
@@ -61,6 +74,15 @@ function LoginPage() {
         </aside>
         <div className="login-page-image" />
       </div>
+      <Snackbar
+        open={!!snackError}
+        autoHideDuration={6000}
+        onClose={() => setSnackError('')}
+      >
+        <Alert onClose={() => setSnackError('')} severity="error">
+          {snackError}
+        </Alert>
+      </Snackbar>
     </div>
   )
 }

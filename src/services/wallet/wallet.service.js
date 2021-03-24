@@ -5,6 +5,7 @@ import { useAuthService } from '@services/auth/auth.service'
 import { User, Wallet, WalletListItem } from '@models/index'
 
 const [useGlobalWalletProvider, WalletProvider] = createGlobalState()
+
 const useWalletService = () => {
   const [error, setError] = useState(null)
   const [wallet, setWallet] = useGlobalWalletProvider()
@@ -59,6 +60,7 @@ const useWalletService = () => {
 
   return {
     createNewWallet,
+    setWallet,
     walletError: error,
     getWallet,
     selectedWallet: wallet

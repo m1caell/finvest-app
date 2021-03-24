@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Switch } from 'react-router-dom'
 import { PublicRoute, PrivateRoute } from '@routes'
 import { LoginPage, HomePage } from '@pages'
-import { AuthProvider, WalletProvider } from '@services'
+import { AuthProvider, WalletProvider } from '@services/index'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { ptBR } from '@material-ui/core/locale'
+import { LoaderComponent } from '@components/'
 
 import '@styles/app.scss'
 
@@ -19,6 +20,7 @@ const theme = createMuiTheme(
 function App() {
   return (
     <div className="app">
+      <LoaderComponent />
       <ThemeProvider theme={theme}>
         <AuthProvider>
           <WalletProvider>

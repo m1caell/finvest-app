@@ -1,27 +1,28 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Button from '@material-ui/core/Button'
 import Alert from '@material-ui/lab/Alert'
 import Snackbar from '@material-ui/core/Snackbar'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
-import { DataGrid } from '@material-ui/data-grid'
 import { CardComponent, TitleComponent } from '@components/index'
 import { SliderCreateShare } from '@pages/home/components/slider-create-share.component'
+import { useWalletService, useShareService } from '@services/'
+import { UpdateShare } from '@models/updateShare.model'
+import PropTypes from 'prop-types'
 
 import './wallet-content.style.scss'
-import { useWalletService } from '@services/'
 
 const SHARE_CREATION_SUCCESS_MESSAGE = {
   text: 'Ação adicionada com sucesso.',
   type: 'success'
 }
 
-const WalletContent = () => {
+const WalletContent = ({ currentWalletId }) => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState(null)
   const [rows, setRows] = useState([])
-  const [selectedRow, setSelectedRow] = useState(null)
 
-  const { selectedWallet } = useWalletService()
+  const { selectedWallet, getWallet } = useWalletService()
+  const { updateCurrentShare } = useShareService()
 
   const toggleDrawer = open => event => {
     if (
@@ -44,58 +45,137 @@ const WalletContent = () => {
 
   const prepareRows = () => {
     return selectedWallet.walletShareList.map(
-      ({ walletShareId, share, qntShare, qntWanted, sector, price }, key) => {
+      (
+        {
+          walletShareId,
+          share = '-',
+          qntShare = 0,
+          qntWanted = 0,
+          sector = 'Sem informação a exibir',
+          price = 'Falha',
+          currentHeritage = 0,
+          currentParticipation = 0,
+          distanceFromQntWanted = 0,
+          suggestion = 0
+        },
+        key
+      ) => {
         return {
-          id: key,
           walletShareId,
           share,
           qntShare,
           qntWanted,
           sector,
           price,
-          updatedPatrimony: 100,
-          currentPatrimony: 50,
-          objective: 50,
-          objectiveDistance: 50,
-          suggestion: 100
+          currentHeritage: currentHeritage || price * qntShare,
+          currentParticipation,
+          distanceFromQntWanted,
+          suggestion
         }
       }
     )
   }
 
-  const columns = useMemo(
-    () => [
-      { field: 'walletShareId', headerName: 'ID', width: 100 },
-      { field: 'share', headerName: 'Código', width: 100 },
-      { field: 'sector', headerName: 'Setor', width: 200 },
-      { field: 'qntShare', headerName: 'Quantidade', width: 130 },
-      { field: 'price', headerName: 'Cotação', width: 110 },
-      {
-        field: 'updatedPatrimony',
-        headerName: 'Patrimônio Atualizado',
-        width: 200
-      },
-      { field: 'currentPatrimony', headerName: 'Patrimônio Atual', width: 160 },
-      { field: 'objective', headerName: 'Objetivo', width: 130 },
-      {
-        field: 'objectiveDistance',
-        headerName: 'Distância do Objetivo',
-        width: 190
-      },
-      { field: 'suggestion', headerName: 'Recomendação R$', width: 180 }
-    ],
-    []
-  )
+  const updateShare = async ({ walletShareId, share, qntShare, qntWanted }) => {
+    const shareModel = new UpdateShare({
+      walletShareId,
+      walletId: currentWalletId,
+      shareCode: share,
+      qntShare,
+      qntWanted
+    })
+
+    const result = await updateCurrentShare(shareModel)
+
+    if (result) {
+      getWallet(currentWalletId)
+    }
+  }
+
+  const handleBlurQuantity = ({ event, itemShare }) => {
+    event.preventDefault()
+
+    if (
+      Number(event.target.value) &&
+      itemShare.qntShare !== Number(event.target.value)
+    ) {
+      itemShare.qntShare = Number(event.target.value)
+
+      updateShare(itemShare)
+    }
+  }
+
+  const handleBlurObjective = ({ event, itemShare }) => {
+    event.preventDefault()
+
+    if (
+      Number(event.target.value) &&
+      itemShare.qntWanted !== Number(event.target.value)
+    ) {
+      itemShare.qntWanted = Number(event.target.value)
+
+      updateShare(itemShare)
+    }
+  }
+
+  const renderRows = () =>
+    rows.map((itemShare, key) => {
+      return (
+        <tr key={key}>
+          <td>{itemShare.share}</td>
+          <td>{itemShare.sector}</td>
+          <td>
+            <input
+              type="number"
+              placeholder="Ex.: 1"
+              onBlur={event => handleBlurQuantity({ event, itemShare })}
+              defaultValue={itemShare.qntShare}
+            />
+          </td>
+          <td>R$ {itemShare.price?.toFixed(2)}</td>
+          <td>R$ {itemShare.currentHeritage?.toFixed(2)}</td>
+          <td>{Number(itemShare.currentParticipation)?.toFixed(2) || 0}%</td>
+          <td>
+            <input
+              type="number"
+              placeholder="Ex.: 1%"
+              onBlur={event => handleBlurObjective({ event, itemShare })}
+              defaultValue={itemShare.qntWanted}
+              max={100}
+              min={0}
+            />
+          </td>
+          <td>{Number(itemShare.distanceFromQntWanted) || 0}%</td>
+          <td>{Number(itemShare.suggestion) || 0}</td>
+        </tr>
+      )
+    })
 
   const renderTableShares = () => {
+    if (rows.length) {
+      return (
+        <div className="table-wrapper">
+          <table className="wallet-content-table">
+            <tr>
+              <th>Ativo</th>
+              <th>Setor</th>
+              <th>Quantidade</th>
+              <th>Cotação</th>
+              <th>Patrimônio</th>
+              <th>Participação</th>
+              <th>Objetivo</th>
+              <th>Distância do objetivo</th>
+              <th>Quantas ações comprar?</th>
+            </tr>
+            {renderRows()}
+          </table>
+        </div>
+      )
+    }
+
     return (
-      <div className="wallet-content-table">
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pageSize={10}
-          onRowSelected={param => setSelectedRow(param)}
-        />
+      <div className="table-content-empty">
+        Ainda não há ações adicionadas nesta carteira.
       </div>
     )
   }
@@ -147,6 +227,10 @@ const WalletContent = () => {
       </div>
     </CardComponent>
   ) : null
+}
+
+WalletContent.propTypes = {
+  currentWalletId: PropTypes.number
 }
 
 export { WalletContent }
