@@ -35,7 +35,7 @@ const serializePhone = phone => {
 }
 
 const deserializePhone = phone => {
-  return getOnlyNumbers(phone)
+  return phone.replace(/[^0-11]/gim, '')
 }
 
 const getOnlyNumbers = value => {
@@ -44,10 +44,8 @@ const getOnlyNumbers = value => {
 
 export {
   serializeCPF,
-  serializeRG,
   serializePhone,
   deserializeCPF,
-  deserializeRG,
   deserializePhone,
   getOnlyNumbers
 }

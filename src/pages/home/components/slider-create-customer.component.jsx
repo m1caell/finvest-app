@@ -7,7 +7,7 @@ import { TitleComponent } from '@components'
 import Alert from '@material-ui/lab/Alert'
 import { useHomePage } from '../home.hook'
 import PropTypes from 'prop-types'
-import { serializeCPF, serializeRG, serializePhone,  getOnlyNumbers } from '@utils/index'
+import { serializeCPF, serializePhone,  getOnlyNumbers } from '@utils/index'
 
 
 export const SliderCreateCustomer = ({
@@ -16,7 +16,6 @@ export const SliderCreateCustomer = ({
   loadCustomers
 }) => {
   const [cpf, setCpf] = useState('')
-  const [identity, setIdentity] = useState('')
   const [phone, setPhone] = useState('')
  
   const onCloseCreateCustomerSlider = () => {

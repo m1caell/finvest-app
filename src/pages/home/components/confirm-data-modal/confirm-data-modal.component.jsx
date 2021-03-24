@@ -10,6 +10,7 @@ import { Visibility, VisibilityOff } from '@material-ui/icons'
 import Alert from '@material-ui/lab/Alert'
 import { useHomePage } from '../../home.hook'
 import { useAuthService } from '@services/index'
+import { serializePhone } from '@utils/index'
 
 import './confirm-data-modal.component.scss'
 
@@ -17,6 +18,9 @@ export const ConfirmDataModal = ({ onSuccess }) => {
   const [showPassword, setShowPassword] = useState(false)
 
   const { loggedUser } = useAuthService()
+
+  const [phone, setPhone] = useState(loggedUser?.phone || '')
+  
 
   const onSuccessDataConfirmation = () => {
     onSuccess()
@@ -39,9 +43,17 @@ export const ConfirmDataModal = ({ onSuccess }) => {
      doConfirmData({
       fullName: form.fullName.value,
       email: form.email.value,
+      phone: form.phone.value,
+      address: form.address.value,
       password: form.password.value
     })
   }
+
+  const handleChangePhone = event => {
+    const value = event?.target?.value
+    setPhone(serializePhone(value))
+  }
+
 
   const renderError = () =>
     error ? <Alert severity="error">{error}</Alert> : null
@@ -67,6 +79,29 @@ export const ConfirmDataModal = ({ onSuccess }) => {
           variant="outlined"
           defaultValue={loggedUser?.email || ''}
           inputProps={{ maxLength: 100 }}
+        />
+      </div>
+      <div className="form-row">
+        <TextField
+          id="phone"
+          label="Telefone"
+          type="tel"
+          variant="outlined"
+          value={phone}
+          onChange={handleChangePhone}
+          placeholder="(xx)-xxxxx-xxxx"
+          inputProps={{ maxLength: 16 }}
+        />
+      </div>
+
+      <div className="form-row">
+        <TextField
+          id="address"
+          label="Endereço completo"
+          type="text"
+          variant="outlined"
+          defaultValue={loggedUser?.address || ''}
+          inputProps={{ maxLength: 200 }}
         />
       </div>
 

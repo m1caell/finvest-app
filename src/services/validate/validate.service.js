@@ -89,11 +89,25 @@ const useValidateService = () => {
     }
     return true
   }
+  const validatePhone = phone => {
+    if (!phone) {
+      setError('Telefone inválido')
+      return false
+    }
+    console.log(phone.length)
+
+    if (phone.length <= 11 && phone.length > 13 && phone.length === 0) {
+      setError('Digite um número de telefone válido')
+      return false
+    }
+    return true
+  }
 
   return {
     validate: error,
     validateAddress,
     validateEmail,
+    validatePhone,
     validateFullName,
     validatePassword,
     validateRg,

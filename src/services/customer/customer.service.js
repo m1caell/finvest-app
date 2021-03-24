@@ -10,6 +10,7 @@ const useCustomerService = () => {
     validateEmail,
     validateCpf,
     validateAddress,
+    validatePhone,
     validateRg,
     validatePassword
   } = useValidateService()
@@ -20,16 +21,17 @@ const useCustomerService = () => {
 
   const createNewCustomer = async customerModel => {
     if (
-      validateFullName(customerModel) &&
-      validateEmail(customerModel) &&
-      validateCpf(customerModel) &&
-      validateAddress(customerModel) &&
-      validateRg(customerModel)
+      validateFullName(customerModel.fullName) &&
+      validateEmail(customerModel.email) &&
+      validateCpf(customerModel.cpf) &&
+      validateAddress(customerModel.address) &&
+      validatePhone(customerModel.phone) &&
+      validateRg(customerModel.identity)
     ) {
       customerModel.cpf = customerModel.cpf.replace(/[^0-9]/g, '')
       customerModel.identity = customerModel.identity.replace(/[^0-9]/g, '')
       customerModel.phone = customerModel.phone.replace(/[^0-9]/g, '')
-
+      console.log(customerModel)
       return await createCustomer(customerModel)
     }
   }
@@ -40,10 +42,14 @@ const useCustomerService = () => {
 
   const confirmFirstUserData = async userConfirmData => {
     if (
-      validateFullName(userConfirmData) &&
-      validateEmail(userConfirmData) &&
-      validatePassword(userConfirmData)
+      validateFullName(userConfirmData.fullName) &&
+      validateEmail(userConfirmData.email) &&
+      validateAddress(userConfirmData.address) &&
+      validatePhone(userConfirmData.phone) &&
+      validatePassword(userConfirmData.password)
     ) {
+      userConfirmData.phone = userConfirmData.phone.replace(/[^0-11]/g, '')
+
       return await updateCustomerData(userConfirmData)
     }
   }
