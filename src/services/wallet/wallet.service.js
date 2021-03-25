@@ -58,12 +58,29 @@ const useWalletService = () => {
     return true
   }
 
+  const getCalculateShares = (walletShareList = []) => {
+    walletShareList.forEach(share => {
+      const walletTotal = walletShareList.reduce((accumulator, currentShare) => accumulator + (currentShare.price * currentShare.qntShare), 0)
+      const currentHeritage = share.price * share.qntShare
+      const currentParticipation = (currentHeritage / walletTotal) * 100 || 0
+      const distanceFromQntWanted = currentParticipation - share.qntWanted
+
+      share.currentParticipation = currentParticipation.toFixed(2)
+      share.distanceFromQntWanted = distanceFromQntWanted.toFixed(2)
+      share.currentHeritage = currentHeritage.toFixed(2)
+    })
+
+
+    return walletShareList.map(share => share)
+  }
+
   return {
     createNewWallet,
     setWallet,
     walletError: error,
     getWallet,
-    selectedWallet: wallet
+    selectedWallet: wallet,
+    getCalculateShares
   }
 }
 

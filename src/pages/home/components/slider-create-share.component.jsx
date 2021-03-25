@@ -1,19 +1,16 @@
 import { TextField, Button } from '@material-ui/core'
 import { TitleComponent } from '@components'
 import Alert from '@material-ui/lab/Alert'
-import { useHomePage } from '../home.hook'
 import PropTypes from 'prop-types'
 import { useLocation } from 'react-router-dom'
 
 const WALLET_URL = '/home/wallet/'
 
-export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
-  const onCloseCreateShareSlider = () => {
-    setIsOpenDrawer(false)
-    onSuccessMessage(true)
-  }
-
-  const { doSubmitShare, error } = useHomePage({ onCloseCreateShareSlider })
+export const SliderCreateShare = ({
+  setIsOpenDrawer,
+  doSubmitShare,
+  error
+}) => {
   const location = useLocation()
 
   const onSubmit = event => {
@@ -25,7 +22,7 @@ export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
 
     if (isWalletUrl && urlWalletId) {
       doSubmitShare({
-        shareCode: form.shareCode.value?.toUpperCase(),
+        share: form.shareCode.value?.toUpperCase(),
         walletId: urlWalletId
       })
     }
@@ -57,7 +54,7 @@ export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
             Salvar
           </Button>
           <Button onClick={() => setIsOpenDrawer(false)} variant="contained">
-            Cancelar
+            Voltar
           </Button>
         </div>
       </form>
@@ -68,5 +65,7 @@ export const SliderCreateShare = ({ setIsOpenDrawer, onSuccessMessage }) => {
 SliderCreateShare.propTypes = {
   setIsOpenDrawer: PropTypes.func,
   onSuccessMessage: PropTypes.func,
-  loadShares: PropTypes.func
+  loadShares: PropTypes.func,
+  doSubmitShare: PropTypes.func,
+  error: PropTypes.string
 }

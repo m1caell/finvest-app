@@ -21,10 +21,12 @@ const WALLET_CREATION_SUCCESS_MESSAGE = {
   text: 'Carteira cadastrada com sucesso.',
   type: 'success'
 }
+
 const CUSTOMER_CREATION_SUCCESS_MESSAGE = {
   text: 'Cliente confirmado com sucesso.',
   type: 'success'
 }
+
 const WALLET_NOT_FOUNT_MESSAGE = {
   text: 'Carteira não encontrada.',
   type: 'error'
@@ -37,7 +39,14 @@ const CustomerContent = () => {
   const [currentWalletId, setCurrentWalletId] = useState(null)
 
   const { loggedUser, updateLoggedUser } = useAuthService()
-  const { loadWalletById } = useHomePage()
+  const {
+    loadWalletById,
+    rows,
+    setRows,
+    doSubmitShare,
+    doUpdateWalletShares,
+    error
+  } = useHomePage()
   const location = useLocation()
   const history = useHistory()
 
@@ -122,7 +131,14 @@ const CustomerContent = () => {
     <div className="home-page-customer">
       {renderFirstDialogAccess()}
       <div>
-        <WalletContent currentWalletId={currentWalletId} />
+        <WalletContent
+          currentWalletId={currentWalletId}
+          rows={rows}
+          setRows={setRows}
+          doSubmitShare={doSubmitShare}
+          error={error}
+          doUpdateWalletShares={doUpdateWalletShares}
+        />
       </div>
       <div className="home-page-customer-drawer">
         <SwipeableDrawer

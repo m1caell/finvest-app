@@ -4,29 +4,17 @@ const useShareApi = ({ authorization }) => {
   const { callPost, callGet, callPut } = useRequest({ authorization })
 
   const createShare = async shareModel => {
-    try {
-      const result = await callPost({
-        url: '/share',
-        data: shareModel
-      })
-
-      return result.data
-    } catch (error) {
-      console.error(error)
-    }
+    return await callPost({
+      url: '/share',
+      data: shareModel
+    })
   }
 
-  const updateShare = async updateShareModel => {
-    try {
-      const result = await callPut({
-        url: '/share',
-        data: updateShareModel
-      })
-
-      return result.data
-    } catch (error) {
-      console.error(error)
-    }
+  const updateWalletShares = async updateWalletShares => {
+    return await callPut({
+      url: '/share',
+      data: updateWalletShares
+    })
   }
 
   const getShareById = async id => {
@@ -41,19 +29,7 @@ const useShareApi = ({ authorization }) => {
     }
   }
 
-  const checkIfCodeIsValid = async shareCode => {
-    try {
-      const result = await callGet({
-        url: `/share/check/${shareCode}`
-      })
-
-      return result.data
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  return { createShare, getShareById, checkIfCodeIsValid, updateShare }
+  return { createShare, getShareById, updateWalletShares }
 }
 
 export { useShareApi }

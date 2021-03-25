@@ -11,31 +11,45 @@ const useShareService = () => {
   const {
     createShare,
     getShareById,
-    checkIfCodeIsValid,
-    updateShare
+    updateWalletShares,
   } = useShareApi({
     authorization
   })
 
   const createNewShare = async shareModel => {
     if (validate(shareModel)) {
-      const result = await createShare(shareModel)
+      try {
+        const result = await createShare(shareModel)
 
-      if (result && result.data) {
-        return result
+        if (result && result.data) {
+          return result
+        }
+      } catch (err) {
+        if (err?.response?.data?.message) {
+          setError(err?.response?.data?.message)
+        } else {
+          setError('Código inválido.')
+        }
       }
     }
   }
 
-  const updateCurrentShare = async shareUpdateModel => {
-    if (validate(shareUpdateModel)) {
-      const result = await updateShare(shareUpdateModel)
+  const updateNewWalletShares = async updateWalletSharesModel => {
+    try {
+      const result = await updateWalletShares(updateWalletSharesModel)
 
       if (result && result.data) {
         return result
       }
+    } catch (err) {
+      if (err?.response?.data?.message) {
+        setError(err?.response?.data?.message)
+      } else {
+        setError('Erro ao atualizar.')
+      }
     }
   }
+
 
   const getShare = async id => {
     const data = await getShareById(id)
@@ -45,8 +59,8 @@ const useShareService = () => {
     }
   }
 
-  const validate = ({ shareCode }) => {
-    if (!shareCode) {
+  const validate = ({ share }) => {
+    if (!share) {
       setError('Código é obrigatório.')
       return false
     }
@@ -55,22 +69,11 @@ const useShareService = () => {
     return true
   }
 
-  const checkShareCode = async shareCode => {
-    const data = await checkIfCodeIsValid(shareCode)
-
-    if (data) {
-      return true
-    }
-
-    setError('Código inválido.')
-  }
-
   return {
     createNewShare,
     shareError: error,
     getShare,
-    checkShareCode,
-    updateCurrentShare
+    updateNewWalletShares
   }
 }
 

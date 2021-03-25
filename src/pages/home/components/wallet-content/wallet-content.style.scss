@@ -21,9 +21,22 @@
   .table-wrapper {
     overflow: auto;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 458px;
+
+    &-button {
+      display: flex;
+      justify-content: flex-end;
+
+      & button {
+        background-color: #14ff00;
+      }
+    }
   }
 
-  .table-content-empty{
+  .table-content-empty {
     text-align: center;
     font-size: 20px;
   }
@@ -32,6 +45,7 @@
     width: 100%;
     min-width: 1090px;
     border-collapse: collapse;
+    margin-bottom: 20px;
 
     tr > th,
     tr > td {

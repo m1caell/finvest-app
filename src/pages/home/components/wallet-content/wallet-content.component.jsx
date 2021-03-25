@@ -5,8 +5,7 @@ import Snackbar from '@material-ui/core/Snackbar'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import { CardComponent, TitleComponent } from '@components/index'
 import { SliderCreateShare } from '@pages/home/components/slider-create-share.component'
-import { useWalletService, useShareService } from '@services/'
-import { UpdateShare } from '@models/updateShare.model'
+import { useWalletService } from '@services/'
 import PropTypes from 'prop-types'
 
 import './wallet-content.style.scss'
@@ -16,13 +15,36 @@ const SHARE_CREATION_SUCCESS_MESSAGE = {
   type: 'success'
 }
 
-const WalletContent = ({ currentWalletId }) => {
+const QNT_WANTED_BIGGER_THAN_100_PERCENT = {
+  text: 'A soma de seu objetivo ultrapassa 100%',
+  type: 'warning'
+}
+
+const UPDATE_WALLET_SHARES_SUCCESS_MESSAGE = {
+  text: 'Carteira atualizada com sucesso.',
+  type: 'success'
+}
+
+const UPDATE_WALLET_SHARES_FAIL_MESSAGE = {
+  text: 'Ocorreu um erro ao atualizar.',
+  type: 'error'
+}
+
+const WalletContent = ({
+  currentWalletId,
+  rows = [],
+  setRows,
+  doSubmitShare,
+  error,
+  doUpdateWalletShares
+}) => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState(null)
-  const [rows, setRows] = useState([])
+  const [wantedAlertMessage, setWantedAlertMessage] = useState(null)
+  const [values, setValues] = useState({})
+  const [someValueChange, setSomeValueChange] = useState(false)
 
-  const { selectedWallet, getWallet } = useWalletService()
-  const { updateCurrentShare } = useShareService()
+  const { selectedWallet, getCalculateShares } = useWalletService()
 
   const toggleDrawer = open => event => {
     if (
@@ -39,12 +61,36 @@ const WalletContent = ({ currentWalletId }) => {
   useEffect(() => {
     if (selectedWallet?.walletShareList) {
       const rowsPrepared = prepareRows()
-      setRows(rowsPrepared)
+      const calculatedRows = getCalculateShares(rowsPrepared)
+
+      setRows(calculatedRows)
+      setSomeValueChange(false)
     }
   }, [selectedWallet])
 
+  useEffect(() => {
+    checkWantedQuantity()
+  }, [rows])
+
+  const checkWantedQuantity = () => {
+    if (rows.length) {
+      let wantedTotal = 0
+
+      rows.forEach(element => {
+        wantedTotal += element.qntWanted
+      })
+
+      if (wantedTotal > 100) {
+        setWantedAlertMessage(QNT_WANTED_BIGGER_THAN_100_PERCENT)
+      } else {
+        setWantedAlertMessage(null)
+      }
+    }
+  }
+
   const prepareRows = () => {
-    return selectedWallet.walletShareList.map(
+    const valuesInitialState = {}
+    const list = selectedWallet.walletShareList.map(
       (
         {
           walletShareId,
@@ -53,13 +99,15 @@ const WalletContent = ({ currentWalletId }) => {
           qntWanted = 0,
           sector = 'Sem informação a exibir',
           price = 'Falha',
-          currentHeritage = 0,
           currentParticipation = 0,
           distanceFromQntWanted = 0,
           suggestion = 0
         },
         key
       ) => {
+        valuesInitialState[`qntShare${walletShareId}`] = qntShare
+        valuesInitialState[`qntWanted${walletShareId}`] = qntWanted
+
         return {
           walletShareId,
           share,
@@ -67,29 +115,21 @@ const WalletContent = ({ currentWalletId }) => {
           qntWanted,
           sector,
           price,
-          currentHeritage: currentHeritage || price * qntShare,
+          currentHeritage: price * qntShare,
           currentParticipation,
           distanceFromQntWanted,
           suggestion
         }
       }
     )
+
+    setValues(valuesInitialState)
+    return list
   }
 
-  const updateShare = async ({ walletShareId, share, qntShare, qntWanted }) => {
-    const shareModel = new UpdateShare({
-      walletShareId,
-      walletId: currentWalletId,
-      shareCode: share,
-      qntShare,
-      qntWanted
-    })
-
-    const result = await updateCurrentShare(shareModel)
-
-    if (result) {
-      getWallet(currentWalletId)
-    }
+  const updateRows = rows => {
+    const sharesList = getCalculateShares(rows)
+    setRows(sharesList)
   }
 
   const handleBlurQuantity = ({ event, itemShare }) => {
@@ -101,7 +141,7 @@ const WalletContent = ({ currentWalletId }) => {
     ) {
       itemShare.qntShare = Number(event.target.value)
 
-      updateShare(itemShare)
+      updateRows(rows)
     }
   }
 
@@ -114,7 +154,25 @@ const WalletContent = ({ currentWalletId }) => {
     ) {
       itemShare.qntWanted = Number(event.target.value)
 
-      updateShare(itemShare)
+      updateRows(rows)
+    }
+  }
+
+  const handleChange = (event, valueName) => {
+    const newValues = { ...values }
+    newValues[valueName] = event.target.value
+
+    setValues(newValues)
+    setSomeValueChange(true)
+  }
+
+  const onClickUpdateShares = async () => {
+    const result = await doUpdateWalletShares({ currentWalletId })
+
+    if (result) {
+      setSnackbarMessage(UPDATE_WALLET_SHARES_SUCCESS_MESSAGE)
+    } else {
+      setSnackbarMessage(UPDATE_WALLET_SHARES_FAIL_MESSAGE)
     }
   }
 
@@ -126,27 +184,37 @@ const WalletContent = ({ currentWalletId }) => {
           <td>{itemShare.sector}</td>
           <td>
             <input
+              id={`qntShare-${key}`}
+              name={`qntShare-${key}`}
               type="number"
               placeholder="Ex.: 1"
               onBlur={event => handleBlurQuantity({ event, itemShare })}
-              defaultValue={itemShare.qntShare}
+              value={values[`qntShare${itemShare.walletShareId}`]}
+              onChange={event =>
+                handleChange(event, `qntShare${itemShare.walletShareId}`)
+              }
             />
           </td>
-          <td>R$ {itemShare.price?.toFixed(2)}</td>
-          <td>R$ {itemShare.currentHeritage?.toFixed(2)}</td>
-          <td>{Number(itemShare.currentParticipation)?.toFixed(2) || 0}%</td>
+          <td>R$ {itemShare.price}</td>
+          <td>R$ {itemShare.currentHeritage}</td>
+          <td>{itemShare.currentParticipation || 0}%</td>
           <td>
             <input
+              id={`qntWanted-${key}`}
+              name={`qntWanted-${key}`}
               type="number"
               placeholder="Ex.: 1%"
               onBlur={event => handleBlurObjective({ event, itemShare })}
-              defaultValue={itemShare.qntWanted}
+              value={values[`qntWanted${itemShare.walletShareId}`]}
+              onChange={event =>
+                handleChange(event, `qntWanted${itemShare.walletShareId}`)
+              }
               max={100}
               min={0}
             />
           </td>
-          <td>{Number(itemShare.distanceFromQntWanted) || 0}%</td>
-          <td>{Number(itemShare.suggestion) || 0}</td>
+          <td>{itemShare.distanceFromQntWanted || 0}%</td>
+          {/* <td>{itemShare.suggestion}</td> */}
         </tr>
       )
     })
@@ -155,20 +223,37 @@ const WalletContent = ({ currentWalletId }) => {
     if (rows.length) {
       return (
         <div className="table-wrapper">
-          <table className="wallet-content-table">
-            <tr>
-              <th>Ativo</th>
-              <th>Setor</th>
-              <th>Quantidade</th>
-              <th>Cotação</th>
-              <th>Patrimônio</th>
-              <th>Participação</th>
-              <th>Objetivo</th>
-              <th>Distância do objetivo</th>
-              <th>Quantas ações comprar?</th>
-            </tr>
-            {renderRows()}
-          </table>
+          <div>
+            <table className="wallet-content-table">
+              <tr>
+                <th>Ativo</th>
+                <th>Setor</th>
+                <th>Quantidade</th>
+                <th>Cotação</th>
+                <th>Patrimônio</th>
+                <th>Participação</th>
+                <th>Objetivo</th>
+                <th>Distância do objetivo</th>
+                {/* <th>Quantas ações comprar?</th> */}
+              </tr>
+              {renderRows()}
+            </table>
+            {wantedAlertMessage ? (
+              <Alert severity={wantedAlertMessage?.type}>
+                {wantedAlertMessage?.text}
+              </Alert>
+            ) : null}
+          </div>
+          <div className="table-wrapper-button">
+            <Button
+              disabled={!someValueChange}
+              type="button"
+              variant="contained"
+              onClick={onClickUpdateShares}
+            >
+              Salvar alterações
+            </Button>
+          </div>
         </div>
       )
     }
@@ -190,9 +275,9 @@ const WalletContent = ({ currentWalletId }) => {
           <Button onClick={() => setIsOpenDrawer(true)} variant="contained">
             Adicionar Ação
           </Button>
-          <Button id="putWallet" variant="contained">
+          {/* <Button id="putWallet" variant="contained">
             Editar Carteira
-          </Button>
+          </Button> */}
         </div>
       </header>
       <div className="share-content-main">{renderTableShares()}</div>
@@ -209,6 +294,8 @@ const WalletContent = ({ currentWalletId }) => {
                 setSnackbarMessage(SHARE_CREATION_SUCCESS_MESSAGE)
               }
               setIsOpenDrawer={setIsOpenDrawer}
+              doSubmitShare={doSubmitShare}
+              error={error}
             />
           </div>
         </SwipeableDrawer>
@@ -230,7 +317,12 @@ const WalletContent = ({ currentWalletId }) => {
 }
 
 WalletContent.propTypes = {
-  currentWalletId: PropTypes.number
+  currentWalletId: PropTypes.number,
+  rows: PropTypes.array,
+  setRows: PropTypes.func,
+  doSubmitShare: PropTypes.func,
+  error: PropTypes.string,
+  doUpdateWalletShares: PropTypes.func
 }
 
 export { WalletContent }

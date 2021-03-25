@@ -3,7 +3,8 @@ import {
   Customer,
   UserConfirmData,
   CreateWallet,
-  CreateShare
+  CreateShare,
+  UpdateWalletShares
 } from '@models/index'
 import {
   useCustomerService,
@@ -14,6 +15,7 @@ import PropTypes from 'prop-types'
 
 const useHomePage = props => {
   const [customers, setCustomers] = useState([])
+  const [rows, setRows] = useState([])
 
   const {
     createNewCustomer,
@@ -25,7 +27,7 @@ const useHomePage = props => {
   const { getWallet } = useWalletService()
 
   const { createNewWallet, walletError } = useWalletService()
-  const { createNewShare, checkShareCode, shareError } = useShareService()
+  const { createNewShare, updateNewWalletShares, shareError } = useShareService()
 
   const doSubmitCustomer = async ({
     fullName,
@@ -50,6 +52,19 @@ const useHomePage = props => {
     }
   }
 
+  const doUpdateWalletShares = async ({ currentWalletId }) => {
+    const updateWalletSharesModel = new UpdateWalletShares({ walletId: currentWalletId, walletShareList: rows })
+
+    const result = await updateNewWalletShares(updateWalletSharesModel)
+    console.log(result)
+
+    if (result?.data) {
+      return true
+    }
+
+    return false
+  }
+
   const doSubmitWallet = async ({ name, description }) => {
     const createWallet = new CreateWallet({ name, description })
     const result = await createNewWallet(createWallet)
@@ -59,23 +74,44 @@ const useHomePage = props => {
     }
   }
 
-  const doSubmitShare = async ({ shareCode, walletId }) => {
-    const isValid = await checkShareCode(shareCode)
+  const doSubmitShare = async ({ share, walletId }) => {
+    const shareRequest = new CreateShare({
+      walletId,
+      share,
+      qntShare: 0,
+      qntWanted: 0
+    })
 
-    if (isValid) {
-      const share = new CreateShare({
-        walletId,
-        shareCode,
-        qntShare: 0,
-        qntWanted: 0
-      })
+    const shareResponse = await createNewShare(shareRequest)
 
-      const result = await createNewShare(share)
+    if (shareResponse?.data) {
+      const {
+        walletShareId,
+        share,
+        qntShare,
+        qntWanted,
+        price,
+        sector
+      } = shareResponse.data.data
 
-      if (result) {
-        props?.onCloseCreateShareSlider()
-        await loadWalletById(walletId)
+      const newShare = {
+        walletShareId,
+        share,
+        qntShare,
+        qntWanted,
+        sector,
+        price,
+        currentHeritage: price * qntShare,
+        currentParticipation: 0,
+        distanceFromQntWanted: 0,
+        suggestion: 0
       }
+
+      const newRowsList = rows.map(item => item)
+      newRowsList.push(newShare)
+      console.log(newRowsList)
+      setRows(newRowsList)
+      props?.onCloseCreateShareSlider()
     }
   }
 
@@ -109,6 +145,9 @@ const useHomePage = props => {
     doConfirmData,
     customers,
     loadWalletById,
+    rows,
+    setRows,
+    doUpdateWalletShares,
     error: customerError || walletError || shareError
   }
 }

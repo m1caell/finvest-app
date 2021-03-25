@@ -1,7 +1,7 @@
 class CreateShare {
-  constructor({ walletId, shareCode, qntShare, qntWanted }) {
+  constructor({ walletId, share, qntShare, qntWanted }) {
     this.walletId = walletId
-    this.shareCode = shareCode
+    this.share = share
     this.qntShare = qntShare
     this.qntWanted = qntWanted
   }
