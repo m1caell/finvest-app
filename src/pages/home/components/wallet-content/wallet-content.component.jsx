@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import Button from '@material-ui/core/Button'
+import { Button, TextField } from '@material-ui/core/'
 import Alert from '@material-ui/lab/Alert'
 import Snackbar from '@material-ui/core/Snackbar'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
@@ -36,7 +36,11 @@ const WalletContent = ({
   setRows,
   doSubmitShare,
   error,
-  doUpdateWalletShares
+  doUpdateWalletShares,
+  valueToSimulate,
+  setValueToSimulate,
+  doSimulateCalc,
+  rest
 }) => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState(null)
@@ -214,7 +218,7 @@ const WalletContent = ({
             />
           </td>
           <td>{itemShare.distanceFromQntWanted || 0}%</td>
-          {/* <td>{itemShare.suggestion}</td> */}
+          {valueToSimulate ? <td>{itemShare.suggestion}</td> : null}
         </tr>
       )
     })
@@ -234,7 +238,7 @@ const WalletContent = ({
                 <th>Participação</th>
                 <th>Objetivo</th>
                 <th>Distância do objetivo</th>
-                {/* <th>Quantas ações comprar?</th> */}
+                {valueToSimulate ? <th>Quantas ações comprar?</th> : null}
               </tr>
               {renderRows()}
             </table>
@@ -280,7 +284,26 @@ const WalletContent = ({
           </Button> */}
         </div>
       </header>
-      <div className="share-content-main">{renderTableShares()}</div>
+      <div className="share-content-main">
+        <div className="share-content-main__input-buy">
+          <TextField
+            id="quantityToBuy"
+            name="quantityToBuy"
+            label="Simular próxima compra"
+            placeholder="Digite o valor"
+            type="number"
+            variant="outlined"
+            inputProps={{ min: 0, maxLength: 200 }}
+            value={valueToSimulate}
+            onChange={e => setValueToSimulate(e.target.value)}
+          />
+          <Button onClick={doSimulateCalc} variant="contained">
+            Simular
+          </Button>
+        </div>
+        {rest && rest > 0 ? <span>Vai sobrar R$ {rest}</span> : null}
+        {renderTableShares()}
+      </div>
       <div className="wallet-content-drawer">
         <SwipeableDrawer
           anchor="right"
@@ -317,12 +340,17 @@ const WalletContent = ({
 }
 
 WalletContent.propTypes = {
-  currentWalletId: PropTypes.number,
-  rows: PropTypes.array,
-  setRows: PropTypes.func,
-  doSubmitShare: PropTypes.func,
+  currentWalletId: PropTypes.number.isRequired,
+  rows: PropTypes.array.isRequired,
+  setRows: PropTypes.func.isRequired,
+  doSubmitShare: PropTypes.func.isRequired,
   error: PropTypes.string,
-  doUpdateWalletShares: PropTypes.func
+  doUpdateWalletShares: PropTypes.func.isRequired,
+  valueToSimulate: PropTypes.any.isRequired,
+  setValueToSimulate: PropTypes.func.isRequired,
+  doSimulateCalc: PropTypes.func.isRequired,
+  rest: PropTypes.any.isRequired,
+  setRest: PropTypes.func.isRequired
 }
 
 export { WalletContent }

@@ -23,13 +23,10 @@ const serializePhone = phone => {
 
   if (len <= 6) {
     phone = num.replace(/(\d{2})(\d{1,2})/g, '($1$2)')
-    console.log(num)
   } else if (len <= 14) {
     phone = num.replace(/(\d{2})(\d{5})(\d{1,3})/g, '($1) $2-$3')
-    console.log(num)
   } else {
     phone = num.replace(/(\d{2})(\d{3})(\d{3})(\d{1,2})/g, '($1) $2-$3')
-    console.log(num)
   }
   return phone
 }

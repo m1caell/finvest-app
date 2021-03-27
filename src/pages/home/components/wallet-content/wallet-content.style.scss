@@ -18,6 +18,18 @@
     }
   }
 
+  .share-content-main {
+    &__input-buy {
+      margin-bottom: 10px;
+      display: flex;
+
+      & > button {
+        margin-left: 15px;
+        max-height: 54px;
+      }
+    }
+  }
+
   .table-wrapper {
     overflow: auto;
     width: 100%;
@@ -25,6 +37,7 @@
     flex-direction: column;
     justify-content: space-between;
     min-height: 458px;
+    margin-top: 20px;
 
     &-button {
       display: flex;

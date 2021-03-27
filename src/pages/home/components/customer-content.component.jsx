@@ -45,7 +45,12 @@ const CustomerContent = () => {
     setRows,
     doSubmitShare,
     doUpdateWalletShares,
-    error
+    error,
+    valueToSimulate,
+    setValueToSimulate,
+    doSimulateCalc,
+    rest,
+    setRest
   } = useHomePage()
   const location = useLocation()
   const history = useHistory()
@@ -138,6 +143,11 @@ const CustomerContent = () => {
           doSubmitShare={doSubmitShare}
           error={error}
           doUpdateWalletShares={doUpdateWalletShares}
+          valueToSimulate={valueToSimulate}
+          setValueToSimulate={setValueToSimulate}
+          doSimulateCalc={doSimulateCalc}
+          rest={rest}
+          setRest={setRest}
         />
       </div>
       <div className="home-page-customer-drawer">

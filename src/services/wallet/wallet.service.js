@@ -74,13 +74,53 @@ const useWalletService = () => {
     return walletShareList.map(share => share)
   }
 
+  const getCalculateSimulation = (value = 0, walletShareList = []) => {
+    let valueToDecrement = value
+    const longestSharesFromObjectiveSorted = walletShareList.map(shareCopy => shareCopy).sort((a, b) => a.distanceFromQntWanted - b.distanceFromQntWanted)
+    let walletCopy = walletShareList.map(shareCopy => {
+      shareCopy.suggestion = 0
+
+      return shareCopy
+    })
+
+    const tryBuyAShare = (longestShare) => {
+      const findInWalletIndex = walletCopy.findIndex(share => share.walletShareId === longestShare.walletShareId)
+
+      if (valueToDecrement > longestShare.price && longestShare.distanceFromQntWanted <= 0) {
+        valueToDecrement -= longestShare.price
+        walletCopy[findInWalletIndex].suggestion++
+
+        walletCopy = getCalculateShares(walletCopy)
+
+        return true
+      }
+
+      return false
+    }
+
+    while (valueToDecrement > 0) {
+      const primaryLongestShare = longestSharesFromObjectiveSorted[0]
+      const secondLongestShare = longestSharesFromObjectiveSorted[1]
+
+      const cantBuyPrimary = !tryBuyAShare(primaryLongestShare)
+      const cantBuySecondary = !tryBuyAShare(secondLongestShare)
+
+      if (cantBuyPrimary && cantBuySecondary) {
+        valueToDecrement = -valueToDecrement
+      }
+    }
+
+    return { walletShares: walletCopy, rest: ((valueToDecrement) * -1)?.toFixed(2) }
+  }
+
   return {
     createNewWallet,
     setWallet,
     walletError: error,
     getWallet,
     selectedWallet: wallet,
-    getCalculateShares
+    getCalculateShares,
+    getCalculateSimulation
   }
 }
 

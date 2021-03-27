@@ -18,6 +18,8 @@ import PropTypes from 'prop-types'
 const useHomePage = props => {
   const [customers, setCustomers] = useState([])
   const [rows, setRows] = useState([])
+  const [valueToSimulate, setValueToSimulate] = useState(0)
+  const [rest, setRest] = useState(null)
 
   const {
     createNewCustomer,
@@ -34,9 +36,7 @@ const useHomePage = props => {
     validatePassword
   } = useValidateService()
 
-  const { getWallet } = useWalletService()
-
-  const { createNewWallet, walletError } = useWalletService()
+  const { createNewWallet, walletError, getWallet, getCalculateSimulation } = useWalletService()
   const { createNewShare, updateNewWalletShares, shareError } = useShareService()
 
   const doSubmitCustomer = async ({
@@ -66,7 +66,6 @@ const useHomePage = props => {
     const updateWalletSharesModel = new UpdateWalletShares({ walletId: currentWalletId, walletShareList: rows })
 
     const result = await updateNewWalletShares(updateWalletSharesModel)
-    console.log(result)
 
     if (result?.data) {
       return true
@@ -119,7 +118,7 @@ const useHomePage = props => {
 
       const newRowsList = rows.map(item => item)
       newRowsList.push(newShare)
-      console.log(newRowsList)
+
       setRows(newRowsList)
       props?.onCloseCreateShareSlider()
     }
@@ -168,6 +167,12 @@ const useHomePage = props => {
     return walletResult
   }
 
+  const doSimulateCalc = () => {
+    const { walletShares, rest } = getCalculateSimulation(valueToSimulate, rows)
+    setRows(walletShares)
+    setRest(rest)
+  }
+
   return {
     doSubmitCustomer,
     doSubmitWallet,
@@ -179,6 +184,11 @@ const useHomePage = props => {
     rows,
     setRows,
     doUpdateWalletShares,
+    valueToSimulate,
+    setValueToSimulate,
+    doSimulateCalc,
+    rest,
+    setRest,
     error: customerError || walletError || shareError
   }
 }

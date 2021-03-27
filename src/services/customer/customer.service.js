@@ -31,7 +31,7 @@ const useCustomerService = () => {
       customerModel.cpf = customerModel.cpf.replace(/[^0-9]/g, '')
       customerModel.identity = customerModel.identity.replace(/[^0-9]/g, '')
       customerModel.phone = customerModel.phone.replace(/[^0-9]/g, '')
-      console.log(customerModel)
+      
       return await createCustomer(customerModel)
     }
   }
