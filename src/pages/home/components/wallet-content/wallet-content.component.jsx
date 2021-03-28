@@ -6,6 +6,7 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import { CardComponent, TitleComponent } from '@components/index'
 import { SliderCreateShare } from '@pages/home/components/slider-create-share.component'
 import { useWalletService } from '@services/'
+import { TrendingUp } from '@material-ui/icons';
 import PropTypes from 'prop-types'
 
 import './wallet-content.style.scss'
@@ -139,10 +140,7 @@ const WalletContent = ({
   const handleBlurQuantity = ({ event, itemShare }) => {
     event.preventDefault()
 
-    if (
-      Number(event.target.value) &&
-      itemShare.qntShare !== Number(event.target.value)
-    ) {
+    if (itemShare.qntShare !== Number(event.target.value)) {
       itemShare.qntShare = Number(event.target.value)
 
       updateRows(rows)
@@ -152,10 +150,7 @@ const WalletContent = ({
   const handleBlurObjective = ({ event, itemShare }) => {
     event.preventDefault()
 
-    if (
-      Number(event.target.value) &&
-      itemShare.qntWanted !== Number(event.target.value)
-    ) {
+    if (itemShare.qntWanted !== Number(event.target.value)) {
       itemShare.qntWanted = Number(event.target.value)
 
       updateRows(rows)
@@ -217,8 +212,20 @@ const WalletContent = ({
               min={0}
             />
           </td>
-          <td>{itemShare.distanceFromQntWanted || 0}%</td>
-          {valueToSimulate ? <td>{itemShare.suggestion}</td> : null}
+          <td>
+            {itemShare.distanceFromQntWanted || 0}%
+            {itemShare?.projectedDistanceFromQntWanted && valueToSimulate ? (
+              <div className="wallet-content-table-projected">
+                Objetivo projetado: {itemShare.projectedDistanceFromQntWanted}%
+              </div>
+            ) : null}
+          </td>
+          <td>
+            <div className="wallet-content-table-suggestion">
+              {itemShare.suggestion}
+              {itemShare.suggestion > 0 ? <TrendingUp /> : null}
+            </div>
+          </td>
         </tr>
       )
     })
@@ -238,7 +245,7 @@ const WalletContent = ({
                 <th>Participação</th>
                 <th>Objetivo</th>
                 <th>Distância do objetivo</th>
-                {valueToSimulate ? <th>Quantas ações comprar?</th> : null}
+                <th>Quantas ações comprar?</th>
               </tr>
               {renderRows()}
             </table>
@@ -297,11 +304,11 @@ const WalletContent = ({
             value={valueToSimulate}
             onChange={e => setValueToSimulate(e.target.value)}
           />
-          <Button onClick={doSimulateCalc} variant="contained">
+          <Button onClick={doSimulateCalc} disabled={!valueToSimulate} variant="contained">
             Simular
           </Button>
         </div>
-        {rest && rest > 0 ? <span>Vai sobrar R$ {rest}</span> : null}
+        {rest && rest > 0 && valueToSimulate ? <span>Vai sobrar R$ {rest}</span> : null}
         {renderTableShares()}
       </div>
       <div className="wallet-content-drawer">

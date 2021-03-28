@@ -59,38 +59,40 @@ const useWalletService = () => {
   }
 
   const getCalculateShares = (walletShareList = []) => {
-    const result = walletShareList.map(share => share)
-
-    result.forEach(share => {
-      const walletTotal = walletShareList.reduce((accumulator, currentShare) => accumulator + (currentShare.price * (share.qntShare + share.suggestion)), 0)
-      const currentHeritage = share.price * (share.qntShare + share.suggestion)
+    const walletTotal = walletShareList.reduce((accumulator, currentShare) => accumulator + (currentShare.price * currentShare.qntShare), 0)
+    const walletTotalWithSuggestion = walletShareList.reduce((accumulator, currentShare) => accumulator + (currentShare.price * (currentShare.qntShare + currentShare.suggestion)), 0)
+    
+    return walletShareList.map(share => {
+      const currentHeritage = share.price * share.qntShare
       const currentParticipation = (currentHeritage / walletTotal) * 100 || 0
       const distanceFromQntWanted = currentParticipation - share.qntWanted
+
+      const currentHeritageWithSuggestion = share.price * (share.qntShare + share.suggestion)
+      const currentParticipationWithSuggestion = (currentHeritageWithSuggestion / walletTotalWithSuggestion) * 100 || 0
+      const distanceFromQntWantedWithSuggestion = currentParticipationWithSuggestion - share.qntWanted
 
       share.currentParticipation = currentParticipation.toFixed(2)
       share.distanceFromQntWanted = distanceFromQntWanted.toFixed(2)
       share.currentHeritage = currentHeritage.toFixed(2)
+      share.projectedDistanceFromQntWanted = distanceFromQntWantedWithSuggestion.toFixed(2) || distanceFromQntWanted
+
+      return share
     })
-
-
-    return result
   }
 
   const getCalculateSimulation = (value = 0, walletShareList = []) => {
     let valueToDecrement = value
-    const longestSharesFromObjectiveSorted = walletShareList.map(shareCopy => shareCopy).sort((a, b) => a.distanceFromQntWanted - b.distanceFromQntWanted)
+    const longestSharesFromObjectiveSorted = walletShareList.map(shareCopy => shareCopy).sort((a, b) => a.projectedDistanceFromQntWanted - b.projectedDistanceFromQntWanted)
     let walletCopy = walletShareList.map(shareCopy => {
       shareCopy.suggestion = 0
 
       return shareCopy
     })
 
-    const tryBuyAShare = (longestShare, withoutFilter) => {
+    const tryBuyAShare = (longestShare) => {
       const findInWalletIndex = walletCopy.findIndex(share => share.walletShareId === longestShare.walletShareId)
 
-      const condition = withoutFilter ? valueToDecrement > longestShare.price : valueToDecrement > longestShare.price && longestShare.distanceFromQntWanted <= 0
-
-      if (condition) {
+      if (valueToDecrement > longestShare.price) {
         valueToDecrement -= longestShare.price
         walletCopy[findInWalletIndex].suggestion++
 
@@ -109,11 +111,7 @@ const useWalletService = () => {
       const cantBuySecondary = !tryBuyAShare(secondLongestShare)
 
       if (cantBuyPrimary && cantBuySecondary) {
-        const cantBuyWithoutFilter = !tryBuyAShare(primaryLongestShare, true)
-
-        if (cantBuyWithoutFilter) {
-          valueToDecrement = -valueToDecrement
-        }
+        valueToDecrement = -valueToDecrement
       }
     }
 

@@ -60,6 +60,20 @@
     border-collapse: collapse;
     margin-bottom: 20px;
 
+    &-projected {
+      font-size: 12px;
+      color: #4e4e4e;
+    }
+
+    &-suggestion {
+      display: flex;
+      align-items: center;
+
+      & > svg {
+        fill: greenyellow;
+      }
+    }
+
     tr > th,
     tr > td {
       text-align: start;

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Customer,
   UserConfirmData,
@@ -18,7 +18,7 @@ import PropTypes from 'prop-types'
 const useHomePage = props => {
   const [customers, setCustomers] = useState([])
   const [rows, setRows] = useState([])
-  const [valueToSimulate, setValueToSimulate] = useState(0)
+  const [valueToSimulate, setValueToSimulate] = useState("")
   const [rest, setRest] = useState(null)
 
   const {
@@ -38,6 +38,19 @@ const useHomePage = props => {
 
   const { createNewWallet, walletError, getWallet, getCalculateSimulation } = useWalletService()
   const { createNewShare, updateNewWalletShares, shareError } = useShareService()
+
+  useEffect(() => {
+    if(!valueToSimulate) {
+      setRest("")
+      setRows(rows.map(share => {
+        share.suggestion = 0
+        share.projectedDistanceFromQntWanted = null
+
+        return share
+      }))
+    }
+
+  }, [valueToSimulate])
 
   const doSubmitCustomer = async ({
     fullName,
