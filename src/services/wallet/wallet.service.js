@@ -59,9 +59,11 @@ const useWalletService = () => {
   }
 
   const getCalculateShares = (walletShareList = []) => {
-    walletShareList.forEach(share => {
-      const walletTotal = walletShareList.reduce((accumulator, currentShare) => accumulator + (currentShare.price * currentShare.qntShare), 0)
-      const currentHeritage = share.price * share.qntShare
+    const result = walletShareList.map(share => share)
+
+    result.forEach(share => {
+      const walletTotal = walletShareList.reduce((accumulator, currentShare) => accumulator + (currentShare.price * (share.qntShare + share.suggestion)), 0)
+      const currentHeritage = share.price * (share.qntShare + share.suggestion)
       const currentParticipation = (currentHeritage / walletTotal) * 100 || 0
       const distanceFromQntWanted = currentParticipation - share.qntWanted
 
@@ -71,7 +73,7 @@ const useWalletService = () => {
     })
 
 
-    return walletShareList.map(share => share)
+    return result
   }
 
   const getCalculateSimulation = (value = 0, walletShareList = []) => {
@@ -83,15 +85,16 @@ const useWalletService = () => {
       return shareCopy
     })
 
-    const tryBuyAShare = (longestShare) => {
+    const tryBuyAShare = (longestShare, withoutFilter) => {
       const findInWalletIndex = walletCopy.findIndex(share => share.walletShareId === longestShare.walletShareId)
 
-      if (valueToDecrement > longestShare.price && longestShare.distanceFromQntWanted <= 0) {
+      const condition = withoutFilter ? valueToDecrement > longestShare.price : valueToDecrement > longestShare.price && longestShare.distanceFromQntWanted <= 0
+
+      if (condition) {
         valueToDecrement -= longestShare.price
         walletCopy[findInWalletIndex].suggestion++
 
         walletCopy = getCalculateShares(walletCopy)
-
         return true
       }
 
@@ -106,7 +109,11 @@ const useWalletService = () => {
       const cantBuySecondary = !tryBuyAShare(secondLongestShare)
 
       if (cantBuyPrimary && cantBuySecondary) {
-        valueToDecrement = -valueToDecrement
+        const cantBuyWithoutFilter = !tryBuyAShare(primaryLongestShare, true)
+
+        if (cantBuyWithoutFilter) {
+          valueToDecrement = -valueToDecrement
+        }
       }
     }
 
