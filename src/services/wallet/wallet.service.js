@@ -61,7 +61,7 @@ const useWalletService = () => {
   const getCalculateShares = (walletShareList = []) => {
     const walletTotal = walletShareList.reduce((accumulator, currentShare) => accumulator + (currentShare.price * currentShare.qntShare), 0)
     const walletTotalWithSuggestion = walletShareList.reduce((accumulator, currentShare) => accumulator + (currentShare.price * (currentShare.qntShare + currentShare.suggestion)), 0)
-    
+
     return walletShareList.map(share => {
       const currentHeritage = share.price * share.qntShare
       const currentParticipation = (currentHeritage / walletTotal) * 100 || 0
@@ -90,23 +90,24 @@ const useWalletService = () => {
     })
 
     const tryBuyAShare = (longestShare) => {
-      const findInWalletIndex = walletCopy.findIndex(share => share.walletShareId === longestShare.walletShareId)
+      if (longestShare) {
+        const findInWalletIndex = walletCopy.findIndex(share => share.walletShareId === longestShare.walletShareId)
 
-      if (valueToDecrement > longestShare.price) {
-        valueToDecrement -= longestShare.price
-        walletCopy[findInWalletIndex].suggestion++
+        if (valueToDecrement > longestShare.price) {
+          valueToDecrement -= longestShare.price
+          walletCopy[findInWalletIndex].suggestion++
 
-        walletCopy = getCalculateShares(walletCopy)
-        return true
+          walletCopy = getCalculateShares(walletCopy)
+          return true
+        }
+
+        return false
       }
-
-      return false
     }
 
     while (valueToDecrement > 0) {
       const primaryLongestShare = longestSharesFromObjectiveSorted[0]
       const secondLongestShare = longestSharesFromObjectiveSorted[1]
-
       const cantBuyPrimary = !tryBuyAShare(primaryLongestShare)
       const cantBuySecondary = !tryBuyAShare(secondLongestShare)
 
