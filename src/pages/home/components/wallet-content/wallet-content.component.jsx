@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react'
-import { Button, TextField } from '@material-ui/core/'
-import Alert from '@material-ui/lab/Alert'
+import {
+  Button,
+  TextField,
+  Modal,
+  Dialog,
+  DialogActions,
+  DialogContentText,
+  DialogContent,
+  DialogTitle
+} from '@material-ui/core/'
+import { Alert, AlertTitle } from '@material-ui/lab'
 import Snackbar from '@material-ui/core/Snackbar'
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import { CardComponent, TitleComponent } from '@components/index'
@@ -33,6 +42,8 @@ const UPDATE_WALLET_SHARES_FAIL_MESSAGE = {
   type: 'error'
 }
 
+let agreeFunction = () => {}
+
 const WalletContent = ({
   currentWalletId,
   rows = [],
@@ -54,12 +65,16 @@ const WalletContent = ({
   const [wantedAlertMessage, setWantedAlertMessage] = useState(null)
   const [values, setValues] = useState({})
   const [someValueChange, setSomeValueChange] = useState(false)
+  const [openHistoryModal, setOpenHistoryModal] = useState(false)
+  const [historyData, setHistoryData] = useState(null)
+  const [isOpenDialog, setIsOpenDialog] = useState(false)
 
   const {
     selectedWallet,
     setWallet,
     getCalculateShares,
-    deleteWallet
+    deleteWallet,
+    getLogs
   } = useWalletService()
   const history = useHistory()
 
@@ -203,6 +218,84 @@ const WalletContent = ({
     }
   }
 
+  const loadLogs = async () => {
+    const histories = await getLogs(currentWalletId)
+
+    if (histories) {
+      setHistoryData(histories)
+    }
+  }
+
+  const onClickHistory = async () => {
+    await loadLogs()
+    setOpenHistoryModal(true)
+  }
+
+  const renderHistoryModal = () => (
+    <Modal
+      open={openHistoryModal}
+      onClose={() => setOpenHistoryModal(false)}
+      aria-labelledby="simple-modal-title"
+      aria-describedby="simple-modal-description"
+    >
+      <div className="wallet-history-modal">
+        <TitleComponent>Histórico</TitleComponent>
+        <div className="wallet-history-modal__items">
+          {historyData?.length
+            ? historyData.map(({ description, share }, key) => (
+                <Alert key={key} severity="warning">
+                  <AlertTitle>{share}</AlertTitle>
+                  {description}
+                </Alert>
+              ))
+            : null}
+        </div>
+        <Button onClick={() => setOpenHistoryModal(false)} variant="contained">
+          Fechar
+        </Button>
+      </div>
+    </Modal>
+  )
+
+  const onClickAgree = async () => {
+    await agreeFunction()
+    setIsOpenDialog(false)
+  }
+
+  const handleDeleteClick = (origin, value) => {
+    if (origin === 'share') {
+      agreeFunction = () => onClickDeleteShare(value)
+    } else if (origin === 'wallet') {
+      agreeFunction = () => onClickDeleteWallet(value)
+    }
+
+    setIsOpenDialog(true)
+  }
+
+  const renderDialog = () => (
+    <Dialog
+      open={isOpenDialog}
+      onClose={() => setIsOpenDialog(false)}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">Confirmação</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Você deseja realmente sair do sistema?
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setIsOpenDialog(false)} color="primary">
+          Voltar
+        </Button>
+        <Button onClick={onClickAgree} color="primary" autoFocus>
+          Confirmar
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+
   const renderRows = () => {
     const rowsToShow = filterBySector ? rowsFiltered : rows
 
@@ -259,7 +352,9 @@ const WalletContent = ({
           <td>
             <button
               className="deleteIcon"
-              onClick={() => onClickDeleteShare(itemShare.walletShareId)}
+              onClick={() =>
+                handleDeleteClick('share', itemShare.walletShareId)
+              }
             >
               <DeleteIcon />
             </button>
@@ -296,6 +391,9 @@ const WalletContent = ({
             ) : null}
           </div>
           <div className="table-wrapper-button">
+            <Button onClick={onClickHistory} variant="contained">
+              Histórico
+            </Button>
             <Button
               disabled={!someValueChange}
               type="button"
@@ -331,7 +429,7 @@ const WalletContent = ({
           Carteira: <strong>{selectedWallet.name}</strong>
           <button
             className="deleteIcon"
-            onClick={() => onClickDeleteWallet(selectedWallet.walletId)}
+            onClick={() => handleDeleteClick('wallet', selectedWallet.walletId)}
           >
             <DeleteIcon />
           </button>
@@ -412,6 +510,8 @@ const WalletContent = ({
           </Alert>
         </Snackbar>
       </div>
+      {renderHistoryModal()}
+      {renderDialog()}
     </CardComponent>
   ) : (
     renderWithoutWalletSelected()

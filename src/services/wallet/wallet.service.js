@@ -12,7 +12,7 @@ const useWalletService = () => {
 
   const { authorization, loggedUser, updateLoggedUser } = useAuthService()
 
-  const { createWallet, getWalletById, deleteWalletById } = useWalletApi({ authorization })
+  const { createWallet, getWalletById, deleteWalletById, getWalletLogsById } = useWalletApi({ authorization })
 
   const createNewWallet = async walletModel => {
     if (validate(walletModel)) {
@@ -133,6 +133,14 @@ const useWalletService = () => {
     return false
   }
 
+  const getLogs = async (walletId) => {
+    const result = await getWalletLogsById(walletId)
+    
+    if (result?.walletLogs) {
+      return result.walletLogs
+    }
+  }
+
   return {
     createNewWallet,
     setWallet,
@@ -141,7 +149,8 @@ const useWalletService = () => {
     selectedWallet: wallet,
     getCalculateShares,
     getCalculateSimulation,
-    deleteWallet
+    deleteWallet,
+    getLogs
   }
 }
 

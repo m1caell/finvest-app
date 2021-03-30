@@ -25,7 +25,8 @@
       align-items: center;
     }
 
-    &__input-buy, &__input-filter {
+    &__input-buy,
+    &__input-filter {
       margin-bottom: 10px;
       display: flex;
     }
@@ -55,9 +56,9 @@
 
     &-button {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
 
-      & button {
+      & button:last-child {
         background-color: #14ff00;
       }
     }
@@ -207,5 +208,34 @@
       fill: rgb(141, 140, 140);
       cursor: pointer;
     }
+  }
+}
+
+.wallet-history-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 500px;
+  height: 750px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__items {
+    height: 580px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+
+    & > div {
+      margin: 10px 0;
+    }
+  }
+
+  & > h1 {
+    margin-bottom: 40px;
   }
 }

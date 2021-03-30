@@ -28,6 +28,18 @@ const useWalletApi = ({ authorization }) => {
     }
   }
 
+  const getWalletLogsById = async id => {
+    try {
+      const result = await callGet({
+        url: `/wallet/${id}/logs`
+      })
+
+      return result.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const deleteWalletById = async id => {
     try {
       const result = await callDelete({
@@ -40,7 +52,7 @@ const useWalletApi = ({ authorization }) => {
     }
   }
 
-  return { createWallet, getWalletById, deleteWalletById }
+  return { createWallet, getWalletById, deleteWalletById, getWalletLogsById }
 }
 
 export { useWalletApi }
