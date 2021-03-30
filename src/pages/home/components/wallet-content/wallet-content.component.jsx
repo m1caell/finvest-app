@@ -8,6 +8,7 @@ import { SliderCreateShare } from '@pages/home/components/slider-create-share.co
 import { useWalletService } from '@services/'
 import { TrendingUp } from '@material-ui/icons'
 import PropTypes from 'prop-types'
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import './wallet-content.style.scss'
 
@@ -140,6 +141,10 @@ const WalletContent = ({
     setRows(sharesList)
   }
 
+  const deleteRow = rows => {
+    
+  }
+
   const handleBlurQuantity = ({ event, itemShare }) => {
     event.preventDefault()
 
@@ -230,6 +235,9 @@ const WalletContent = ({
               {itemShare.suggestion}
               {itemShare.suggestion > 0 ? <TrendingUp /> : null}
             </div>
+          </td>
+          <td>
+            <button className="deleteIcon" onClick={deleteRow()}><DeleteIcon/></button>
           </td>
         </tr>
       )
