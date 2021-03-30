@@ -284,7 +284,7 @@ const WalletContent = ({
       <DialogTitle id="alert-dialog-title">Confirmação</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Sua ação é ireversível, deseja continuar?
+          Sua ação é irreversível, deseja continuar?
         </DialogContentText>
       </DialogContent>
       <DialogActions>
