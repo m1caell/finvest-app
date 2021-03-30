@@ -50,7 +50,10 @@ const CustomerContent = () => {
     setValueToSimulate,
     doSimulateCalc,
     rest,
-    setRest
+    setRest,
+    filterBySector,
+    setFilterBySector,
+    rowsFiltered
   } = useHomePage()
   const location = useLocation()
   const history = useHistory()
@@ -148,6 +151,9 @@ const CustomerContent = () => {
           doSimulateCalc={doSimulateCalc}
           rest={rest}
           setRest={setRest}
+          filterBySector={filterBySector}
+          setFilterBySector={setFilterBySector}
+          rowsFiltered={rowsFiltered}
         />
       </div>
       <div className="home-page-customer-drawer">

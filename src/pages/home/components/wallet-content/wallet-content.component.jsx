@@ -6,7 +6,7 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import { CardComponent, TitleComponent } from '@components/index'
 import { SliderCreateShare } from '@pages/home/components/slider-create-share.component'
 import { useWalletService } from '@services/'
-import { TrendingUp } from '@material-ui/icons';
+import { TrendingUp } from '@material-ui/icons'
 import PropTypes from 'prop-types'
 
 import './wallet-content.style.scss'
@@ -34,6 +34,7 @@ const UPDATE_WALLET_SHARES_FAIL_MESSAGE = {
 const WalletContent = ({
   currentWalletId,
   rows = [],
+  rowsFiltered = [],
   setRows,
   doSubmitShare,
   error,
@@ -41,7 +42,9 @@ const WalletContent = ({
   valueToSimulate,
   setValueToSimulate,
   doSimulateCalc,
-  rest
+  rest,
+  filterBySector,
+  setFilterBySector
 }) => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState(null)
@@ -175,8 +178,10 @@ const WalletContent = ({
     }
   }
 
-  const renderRows = () =>
-    rows.map((itemShare, key) => {
+  const renderRows = () => {
+    const rowsToShow = filterBySector ? rowsFiltered : rows
+
+    return rowsToShow.map((itemShare, key) => {
       return (
         <tr key={key}>
           <td>{itemShare.share}</td>
@@ -229,6 +234,7 @@ const WalletContent = ({
         </tr>
       )
     })
+  }
 
   const renderTableShares = () => {
     if (rows.length) {
@@ -292,23 +298,42 @@ const WalletContent = ({
         </div>
       </header>
       <div className="share-content-main">
-        <div className="share-content-main__input-buy">
-          <TextField
-            id="quantityToBuy"
-            name="quantityToBuy"
-            label="Simular próxima compra"
-            placeholder="Digite o valor"
-            type="number"
-            variant="outlined"
-            inputProps={{ min: 0, maxLength: 200 }}
-            value={valueToSimulate}
-            onChange={e => setValueToSimulate(e.target.value)}
-          />
-          <Button onClick={doSimulateCalc} disabled={!valueToSimulate} variant="contained">
-            Simular
-          </Button>
+        <div className="share-content-main__header">
+          <div className="share-content-main__input-filter">
+            <TextField
+              name="filterBySector"
+              label="Filtro"
+              placeholder="Digite o setor"
+              type="text"
+              variant="outlined"
+              inputProps={{ maxLength: 200 }}
+              value={filterBySector}
+              onChange={e => setFilterBySector(e.target.value)}
+            />
+          </div>
+          <div className="share-content-main__input-buy">
+            {rest && rest > 0 && valueToSimulate ? (
+              <span>Vai sobrar R$ {rest}</span>
+            ) : null}
+            <TextField
+              name="quantityToBuy"
+              label="Simular próxima compra"
+              placeholder="Digite o valor"
+              type="number"
+              variant="outlined"
+              inputProps={{ min: 0, maxLength: 200 }}
+              value={valueToSimulate}
+              onChange={e => setValueToSimulate(e.target.value)}
+            />
+            <Button
+              onClick={doSimulateCalc}
+              disabled={!valueToSimulate}
+              variant="contained"
+            >
+              Simular
+            </Button>
+          </div>
         </div>
-        {rest && rest > 0 && valueToSimulate ? <span>Vai sobrar R$ {rest}</span> : null}
         {renderTableShares()}
       </div>
       <div className="wallet-content-drawer">
@@ -347,7 +372,7 @@ const WalletContent = ({
 }
 
 WalletContent.propTypes = {
-  currentWalletId: PropTypes.number.isRequired,
+  currentWalletId: PropTypes.number,
   rows: PropTypes.array.isRequired,
   setRows: PropTypes.func.isRequired,
   doSubmitShare: PropTypes.func.isRequired,
@@ -357,7 +382,10 @@ WalletContent.propTypes = {
   setValueToSimulate: PropTypes.func.isRequired,
   doSimulateCalc: PropTypes.func.isRequired,
   rest: PropTypes.any.isRequired,
-  setRest: PropTypes.func.isRequired
+  setRest: PropTypes.func.isRequired,
+  filterBySector: PropTypes.string,
+  setFilterBySector: PropTypes.func.isRequired,
+  rowsFiltered: PropTypes.array
 }
 
 export { WalletContent }

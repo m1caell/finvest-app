@@ -19,13 +19,27 @@
   }
 
   .share-content-main {
-    &__input-buy {
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &__input-buy, &__input-filter {
       margin-bottom: 10px;
       display: flex;
+    }
+
+    &__input-buy {
+      align-items: center;
 
       & > button {
+        height: 54px;
         margin-left: 15px;
-        max-height: 54px;
+      }
+
+      & > span {
+        margin-right: 15px;
       }
     }
   }

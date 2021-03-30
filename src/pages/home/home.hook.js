@@ -20,6 +20,8 @@ const useHomePage = props => {
   const [rows, setRows] = useState([])
   const [valueToSimulate, setValueToSimulate] = useState("")
   const [rest, setRest] = useState(null)
+  const [filterBySector, setFilterBySector] = useState("")
+  const [rowsFiltered, setRowsFiltered] = useState([])
 
   const {
     createNewCustomer,
@@ -40,7 +42,7 @@ const useHomePage = props => {
   const { createNewShare, updateNewWalletShares, shareError } = useShareService()
 
   useEffect(() => {
-    if(!valueToSimulate) {
+    if (!valueToSimulate) {
       setRest("")
       setRows(rows.map(share => {
         share.suggestion = 0
@@ -51,6 +53,15 @@ const useHomePage = props => {
     }
 
   }, [valueToSimulate])
+
+  const doFilterBySector = () => {
+    const filtered = rows.filter((share) => share.sector.toUpperCase().includes(filterBySector.toUpperCase()))
+    setRowsFiltered(filtered)
+  }
+
+  useEffect(() => {
+    doFilterBySector()
+  }, [filterBySector])
 
   const doSubmitCustomer = async ({
     fullName,
@@ -202,6 +213,9 @@ const useHomePage = props => {
     doSimulateCalc,
     rest,
     setRest,
+    filterBySector,
+    setFilterBySector,
+    rowsFiltered,
     error: customerError || walletError || shareError
   }
 }
