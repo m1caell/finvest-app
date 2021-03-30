@@ -55,7 +55,12 @@ const WalletContent = ({
   const [values, setValues] = useState({})
   const [someValueChange, setSomeValueChange] = useState(false)
 
-  const { selectedWallet, setWallet, getCalculateShares, deleteWallet } = useWalletService()
+  const {
+    selectedWallet,
+    setWallet,
+    getCalculateShares,
+    deleteWallet
+  } = useWalletService()
   const history = useHistory()
 
   const toggleDrawer = open => event => {
@@ -311,6 +316,14 @@ const WalletContent = ({
     )
   }
 
+  const renderWithoutWalletSelected = () => (
+    <CardComponent>
+      <Alert severity="info">
+        Selecione ou crie uma carteira para continuar!
+      </Alert>
+    </CardComponent>
+  )
+
   return selectedWallet ? (
     <CardComponent className="wallet-content">
       <header className="wallet-content-header">
@@ -400,7 +413,9 @@ const WalletContent = ({
         </Snackbar>
       </div>
     </CardComponent>
-  ) : null
+  ) : (
+    renderWithoutWalletSelected()
+  )
 }
 
 WalletContent.propTypes = {
