@@ -241,14 +241,16 @@ const WalletContent = ({
       <div className="wallet-history-modal">
         <TitleComponent>Histórico</TitleComponent>
         <div className="wallet-history-modal__items">
-          {historyData?.length
-            ? historyData.map(({ description, share }, key) => (
-                <Alert key={key} severity="warning">
-                  <AlertTitle>{share}</AlertTitle>
-                  {description}
-                </Alert>
-              ))
-            : null}
+          {historyData?.length ? (
+            historyData.map(({ description, share }, key) => (
+              <Alert key={key} severity="warning">
+                <AlertTitle>{share}</AlertTitle>
+                {description}
+              </Alert>
+            ))
+          ) : (
+            <Alert severity="info">Ainda não há histórico.</Alert>
+          )}
         </div>
         <Button onClick={() => setOpenHistoryModal(false)} variant="contained">
           Fechar
@@ -282,7 +284,7 @@ const WalletContent = ({
       <DialogTitle id="alert-dialog-title">Confirmação</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Você deseja realmente sair do sistema?
+          Sua ação é ireversível, deseja continuar?
         </DialogContentText>
       </DialogContent>
       <DialogActions>
