@@ -8,7 +8,7 @@ import {
   DialogTitle
 } from '@material-ui/core'
 import { useAuthService } from '@services'
-import { ReactComponent as FinvestLogo } from '@static/finvest-logo.svg'
+import { ReactComponent as FinvestLogoText } from '@static/logo-text.svg'
 import { Link } from 'react-router-dom'
 
 import './header.component.scss'
@@ -49,7 +49,7 @@ const HeaderComponent = () => {
   return (
     <header className="header">
       <Link to="/">
-        <FinvestLogo />
+        <FinvestLogoText />
       </Link>
       <Button
         onClick={() => setIsOpenDialog(true)}

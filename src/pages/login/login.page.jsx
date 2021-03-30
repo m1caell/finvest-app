@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { TextField, Button } from '@material-ui/core'
 import Alert from '@material-ui/lab/Alert'
-import { ReactComponent as FinvestLogo } from '@static/finvest-logo.svg'
+import { ReactComponent as FinvestLogoText } from '@static/logo-text.svg'
+import { ReactComponent as FinvestLogo } from '@static/logo.svg'
 import { useLoginPage } from './login.hook'
 import { useLocation } from 'react-router-dom'
 import Snackbar from '@material-ui/core/Snackbar'
@@ -38,7 +39,8 @@ function LoginPage() {
     <div>
       <div className="login-page">
         <aside className="login-page-form">
-          <FinvestLogo />
+          <FinvestLogo className="logo" />
+          <FinvestLogoText className="logo-text" />
           <form onSubmit={onSubmit} className="form" noValidate>
             <h2 className="form-title">Login</h2>
 
