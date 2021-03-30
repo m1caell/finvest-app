@@ -180,4 +180,18 @@
       }
     }
   }
+  & .deleteIcon {
+    background: none;
+    border: none;
+
+    &:focus {
+      outline: 0px auto -webkit-focus-ring-color;
+      outline-offset: 0px;
+    }
+
+    & svg:hover {
+      fill: rgb(141, 140, 140);
+      cursor: pointer;
+    }
+  }
 }
