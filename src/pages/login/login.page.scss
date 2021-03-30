@@ -4,10 +4,17 @@
 
   &-form {
     width: 496px;
-    padding: 100px;
+    padding: 40px 100px 0px;
+
+    & > .logo {
+      padding-left: 30px;
+    }
+
+    & > .logo-text {
+      padding: 0 60% 0 0;
+    }
 
     & > .form {
-      margin-top: 130px;
       display: flex;
       flex-direction: column;
 
