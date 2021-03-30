@@ -53,7 +53,8 @@ const CustomerContent = () => {
     setRest,
     filterBySector,
     setFilterBySector,
-    rowsFiltered
+    rowsFiltered,
+    removeShareFromList
   } = useHomePage()
   const location = useLocation()
   const history = useHistory()
@@ -71,6 +72,8 @@ const CustomerContent = () => {
         setCurrentWalletId(null)
         history.push('/home')
       }
+    } else {
+      setCurrentWalletId(null)
     }
   }
 
@@ -154,6 +157,7 @@ const CustomerContent = () => {
           filterBySector={filterBySector}
           setFilterBySector={setFilterBySector}
           rowsFiltered={rowsFiltered}
+          removeShareFromList={removeShareFromList}
         />
       </div>
       <div className="home-page-customer-drawer">

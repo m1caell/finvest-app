@@ -197,6 +197,13 @@ const useHomePage = props => {
     setRest(rest)
   }
 
+  const removeShareFromList = (id) => {
+    if (id) {
+      const rowsWithoutDeletedShare = rows.filter(share => share.walletShareId !== id)
+      setRows(rowsWithoutDeletedShare)
+    }
+  }
+
   return {
     doSubmitCustomer,
     doSubmitWallet,
@@ -216,6 +223,7 @@ const useHomePage = props => {
     filterBySector,
     setFilterBySector,
     rowsFiltered,
+    removeShareFromList,
     error: customerError || walletError || shareError
   }
 }

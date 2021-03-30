@@ -12,7 +12,7 @@ const useWalletService = () => {
 
   const { authorization, loggedUser, updateLoggedUser } = useAuthService()
 
-  const { createWallet, getWalletById } = useWalletApi({ authorization })
+  const { createWallet, getWalletById, deleteWalletById } = useWalletApi({ authorization })
 
   const createNewWallet = async walletModel => {
     if (validate(walletModel)) {
@@ -119,6 +119,20 @@ const useWalletService = () => {
     return { walletShares: walletCopy, rest: ((valueToDecrement) * -1)?.toFixed(2) }
   }
 
+  const deleteWallet = async id => {
+    const result = await deleteWalletById(id)
+
+    if (result) {
+      const currentUser = loggedUser
+      currentUser.walletList = currentUser.walletList.filter(item => item.id !== id)
+      updateLoggedUser(currentUser)
+
+      return true
+    }
+
+    return false
+  }
+
   return {
     createNewWallet,
     setWallet,
@@ -126,7 +140,8 @@ const useWalletService = () => {
     getWallet,
     selectedWallet: wallet,
     getCalculateShares,
-    getCalculateSimulation
+    getCalculateSimulation,
+    deleteWallet
   }
 }
 

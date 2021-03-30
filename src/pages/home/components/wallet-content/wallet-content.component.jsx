@@ -8,7 +8,8 @@ import { SliderCreateShare } from '@pages/home/components/slider-create-share.co
 import { useWalletService } from '@services/'
 import { TrendingUp } from '@material-ui/icons'
 import PropTypes from 'prop-types'
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from '@material-ui/icons/Delete'
+import { useHistory } from 'react-router-dom'
 
 import './wallet-content.style.scss'
 
@@ -45,7 +46,8 @@ const WalletContent = ({
   doSimulateCalc,
   rest,
   filterBySector,
-  setFilterBySector
+  setFilterBySector,
+  removeShareFromList
 }) => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState(null)
@@ -53,7 +55,8 @@ const WalletContent = ({
   const [values, setValues] = useState({})
   const [someValueChange, setSomeValueChange] = useState(false)
 
-  const { selectedWallet, getCalculateShares } = useWalletService()
+  const { selectedWallet, setWallet, getCalculateShares, deleteWallet } = useWalletService()
+  const history = useHistory()
 
   const toggleDrawer = open => event => {
     if (
@@ -141,10 +144,6 @@ const WalletContent = ({
     setRows(sharesList)
   }
 
-  const deleteRow = rows => {
-    
-  }
-
   const handleBlurQuantity = ({ event, itemShare }) => {
     event.preventDefault()
 
@@ -180,6 +179,22 @@ const WalletContent = ({
       setSnackbarMessage(UPDATE_WALLET_SHARES_SUCCESS_MESSAGE)
     } else {
       setSnackbarMessage(UPDATE_WALLET_SHARES_FAIL_MESSAGE)
+    }
+  }
+
+  const onClickDeleteShare = id => {
+    setSomeValueChange(true)
+    removeShareFromList(id)
+  }
+
+  const onClickDeleteWallet = async id => {
+    if (id) {
+      const result = await deleteWallet(id)
+
+      if (result) {
+        setWallet(null)
+        history.push('/home')
+      }
     }
   }
 
@@ -237,7 +252,12 @@ const WalletContent = ({
             </div>
           </td>
           <td>
-            <button className="deleteIcon" onClick={deleteRow()}><DeleteIcon/></button>
+            <button
+              className="deleteIcon"
+              onClick={() => onClickDeleteShare(itemShare.walletShareId)}
+            >
+              <DeleteIcon />
+            </button>
           </td>
         </tr>
       )
@@ -260,6 +280,7 @@ const WalletContent = ({
                 <th>Objetivo</th>
                 <th>Distância do objetivo</th>
                 <th>Quantas ações comprar?</th>
+                <th></th>
               </tr>
               {renderRows()}
             </table>
@@ -295,14 +316,17 @@ const WalletContent = ({
       <header className="wallet-content-header">
         <TitleComponent>
           Carteira: <strong>{selectedWallet.name}</strong>
+          <button
+            className="deleteIcon"
+            onClick={() => onClickDeleteWallet(selectedWallet.walletId)}
+          >
+            <DeleteIcon />
+          </button>
         </TitleComponent>
         <div className="header-controls">
           <Button onClick={() => setIsOpenDrawer(true)} variant="contained">
             Adicionar Ação
           </Button>
-          {/* <Button id="putWallet" variant="contained">
-            Editar Carteira
-          </Button> */}
         </div>
       </header>
       <div className="share-content-main">
@@ -389,11 +413,12 @@ WalletContent.propTypes = {
   valueToSimulate: PropTypes.any.isRequired,
   setValueToSimulate: PropTypes.func.isRequired,
   doSimulateCalc: PropTypes.func.isRequired,
-  rest: PropTypes.any.isRequired,
+  rest: PropTypes.any,
   setRest: PropTypes.func.isRequired,
   filterBySector: PropTypes.string,
   setFilterBySector: PropTypes.func.isRequired,
-  rowsFiltered: PropTypes.array
+  rowsFiltered: PropTypes.array,
+  removeShareFromList: PropTypes.func.isRequired
 }
 
 export { WalletContent }
