@@ -76,13 +76,29 @@ const useWalletService = () => {
       share.currentHeritage = currentHeritage.toFixed(2)
       share.projectedDistanceFromQntWanted = distanceFromQntWantedWithSuggestion.toFixed(2) || distanceFromQntWanted
 
+      share.suggestion = share.distanceFromQntWanted > 0 ? share.suggestion * -1 : share.suggestion
+
       return share
     })
   }
 
   const getCalculateSimulation = (value = 0, walletShareList = []) => {
     let valueToDecrement = value
-    const longestSharesFromObjectiveSorted = walletShareList.map(shareCopy => shareCopy).sort((a, b) => a.projectedDistanceFromQntWanted - b.projectedDistanceFromQntWanted)
+    const longestSharesFromObjectiveSorted = walletShareList.map(shareCopy => shareCopy).sort(function (a, b) {
+      if (a < 0) {
+        a = a * -1
+      }
+
+      if (b < 0) {
+        b = b * -1
+      }
+
+      if (a.projectedDistanceFromQntWanted > b.projectedDistanceFromQntWanted) {
+        return 1
+      }
+      return 0
+    })
+
     let walletCopy = walletShareList.map(shareCopy => {
       shareCopy.suggestion = 0
 
