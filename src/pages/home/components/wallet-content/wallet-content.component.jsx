@@ -15,7 +15,7 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
 import { CardComponent, TitleComponent } from '@components/index'
 import { SliderCreateShare } from '@pages/home/components/slider-create-share.component'
 import { useWalletService } from '@services/'
-import { TrendingUp } from '@material-ui/icons'
+import { CallMade, CallReceived, Maximize } from '@material-ui/icons'
 import PropTypes from 'prop-types'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useHistory } from 'react-router-dom'
@@ -346,7 +346,7 @@ const WalletContent = ({
           <td>
             <div className="wallet-content-table-suggestion">
               {itemShare.suggestion}
-              {itemShare.suggestion > 0 ? <TrendingUp /> : null}
+              {valueToSimulate > 0 ? renderSuggestionIcon(itemShare.suggestion) : null}
             </div>
           </td>
           <td>
@@ -362,6 +362,18 @@ const WalletContent = ({
         </tr>
       )
     })
+  }
+
+  const renderSuggestionIcon = (suggestion) => {
+    if (suggestion > 0) {
+      return <CallMade className="green-icon" />
+    }
+
+    if (suggestion < 0) {
+      return <CallReceived className="red-icon" />
+    }
+
+    return <Maximize />
   }
 
   const renderTableShares = () => {

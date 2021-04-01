@@ -83,9 +83,18 @@
     &-suggestion {
       display: flex;
       align-items: center;
+      justify-content: center;
+
+      & > .green-icon {
+        fill: green;
+      }
+
+      & > .red-icon {
+        fill: red;
+      }
 
       & > svg {
-        fill: greenyellow;
+        margin-left: 15px;
       }
     }
 
